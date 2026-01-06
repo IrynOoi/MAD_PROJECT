@@ -3,7 +3,7 @@
 <img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/59d5604b-d0b2-4d89-aead-17d22dc0a109" />
 
 
-## AFTER INSTALL APP:
+## AFTER INSTALL APP:(THE APP OCCUPY STORAGE FOR AROUND 10GB)
 
 <img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/d7434529-f7a9-49a6-9083-885427fcf398" />
 
