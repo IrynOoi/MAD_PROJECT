@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#3F51B5"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Food Allergen Predictor"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select AI Model:"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+            <Spinner
+                    android:id="@+id/spinnerModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_marginBottom="24dp"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Dataset:"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+            <Spinner
+                    android:id="@+id/spinnerDataset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp" />
+
+            <Button
+                    android:id="@+id/btnLoadDataset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Load Dataset" />
+
+            <TextView
+                    android:id="@+id/tvDatasetInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="No dataset selected" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Select Item to Predict (Faster):"
+                    android:textStyle="bold" />
+
+            <Spinner
+                    android:id="@+id/spinnerFoodItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp" />
+
+            <Button
+                    android:id="@+id/btnPredictItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="Predict This Item Only" />
+
+            <Button
+                    android:id="@+id/btnPredictAll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:enabled="false"
+                    android:text="Predict All (Batch)"
+                    android:backgroundTint="#FF5722" />
+
+            <Button
+                    android:id="@+id/btnViewResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="View Batch Results"
+                    android:visibility="gone" />
+
+            <Button
+                    android:id="@+id/btnViewDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="View Performance Dashboard"
+                    android:backgroundTint="#4CAF50"
+                    android:layout_marginTop="8dp"/>
+
+            <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="16dp"
+                    android:max="100"
+                    android:progress="0"
+                    android:visibility="gone" />
+
+            <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:text="Ready"
+                    android:visibility="gone" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
