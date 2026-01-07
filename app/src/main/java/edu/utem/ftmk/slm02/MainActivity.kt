@@ -536,26 +536,44 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildPrompt(ingredients: String): String {
         return """
-        [INST]
-        You are a strict Food Safety Officer. 
-        Your task is to identify allergens in the following ingredient list.
-        
-        Target Allergens (Look for these ONLY):
-        [milk, egg, peanut, tree nut, wheat, soy, fish, shellfish, sesame]
-        
-        Rules:
-        1. Analyze the ingredients for direct mentions OR derived products (e.g., 'butter' contains 'milk', 'tofu' contains 'soy', 'flour' contains 'wheat').
-        2. Output ONLY the detected allergens from the Target List.
-        3. Format as a comma-separated list (lowercase).
-        4. If NO allergens are found from the list, output exactly: EMPTY
-        5. Do NOT write explanations, do NOT use sentences. Just the list.
-        
-        Ingredients to analyze:
-        $ingredients
-        [/INST]
-        Answer:
-        """.trimIndent()
+    [INST]
+    You are a strict Food Safety Officer. Your task is to identify allergens in the ingredient list.
+
+    Target Allergens (look for these ONLY):
+    [milk, egg, peanut, tree nut, wheat, soy, fish, shellfish, sesame]
+
+    Common Derived Ingredients Mapping (check for these too):
+    - milk: butter, cream, cheese, yogurt
+    - egg: egg white, egg yolk, albumin
+    - peanut: peanut butter
+    - tree nut: almond, walnut, cashew, pecan
+    - wheat: flour, semolina, bread crumbs
+    - soy: soy sauce, tofu, soy protein
+    - fish: salmon, tuna, cod, anchovy
+    - shellfish: shrimp, crab, lobster
+    - sesame: tahini, sesame oil
+
+    Rules:
+    1. Identify allergens by direct mention or derived ingredients.
+    2. Output ONLY the detected allergens from the target list.
+    3. Format as a lowercase, comma-separated list.
+    4. If NO allergens are found from the list, output exactly: EMPTY
+    5. NEVER write explanations or extra text.
+
+    Examples:
+    Ingredients: "wheat flour, milk, sugar"
+    Output: milk, wheat
+
+    Ingredients: "rice, apple, carrot"
+    Output: EMPTY
+
+    Ingredients to analyze:
+    $ingredients
+    [/INST]
+    Answer:
+    """.trimIndent()
     }
+
 
     private fun hideProgress() {
         progressBar.visibility = View.GONE
