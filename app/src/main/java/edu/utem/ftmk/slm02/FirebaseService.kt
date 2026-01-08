@@ -131,7 +131,7 @@ class FirebaseService {
     }
 
     // =========================================================================
-    // PART 3: Dashboard Aggregation Logic
+    // PART 3: Dashboard Aggregation Logic (FIXED)
     // =========================================================================
 
     private suspend fun updateDashboardFromHistory(modelName: String) {
@@ -142,37 +142,129 @@ class FirebaseService {
 
             val count = docs.size.toDouble()
 
-            // Simple Accumulators
+            // --- 1. Quality Accumulators ---
+            var sumPrecision = 0.0
+            var sumRecall = 0.0
             var sumF1 = 0.0
+            var sumEmr = 0.0
+            var sumHamming = 0.0
+            var sumFnr = 0.0
+
+            // --- 2. Safety Accumulators (Counts) ---
+            var countHallucination = 0.0
+            var countOverPrediction = 0.0
+            var countAbstentionSuccess = 0.0
+            var countAbstentionCases = 0.0
+
+            // --- 3. Efficiency Accumulators ---
             var sumLat = 0.0
-            // ... (You can expand this with all variables as needed, keeping it simple for now to prevent errors)
+            var sumTtft = 0.0
+            var sumItps = 0.0
+            var sumOtps = 0.0
+            var sumOet = 0.0
+
+            // Memory (Sum in KB first)
+            var sumJavaKb = 0.0
+            var sumNativeKb = 0.0
+            var sumPssKb = 0.0
 
             for (doc in docs) {
+                // Get Sub-Maps
                 val valMap = doc.get("validation_metrics") as? Map<String, Any>
                 val effMap = doc.get("efficiency_metrics") as? Map<String, Any>
 
-                if (valMap != null) sumF1 += (valMap["f1Score"] as? Number)?.toDouble() ?: 0.0
-                if (effMap != null) sumLat += (effMap["latencyMs"] as? Number)?.toDouble() ?: 0.0
+                // --- Accumulate Quality ---
+                if (valMap != null) {
+                    sumPrecision += (valMap["precision"] as? Number)?.toDouble() ?: 0.0
+                    sumRecall += (valMap["recall"] as? Number)?.toDouble() ?: 0.0
+                    sumF1 += (valMap["f1Score"] as? Number)?.toDouble() ?: 0.0
+
+                    // Boolean checks for Exact Match (assuming stored as boolean)
+                    val isEm = (valMap["exactMatch"] as? Boolean) == true
+                    if (isEm) sumEmr += 1.0
+
+                    sumHamming += (valMap["hammingLoss"] as? Number)?.toDouble() ?: 0.0
+                    sumFnr += (valMap["falseNegativeRate"] as? Number)?.toDouble() ?: 0.0
+
+                    // Safety Booleans
+                    if ((valMap["isHallucination"] as? Boolean) == true) countHallucination += 1.0
+                    if ((valMap["isOverPrediction"] as? Boolean) == true) countOverPrediction += 1.0
+
+                    // Abstention Logic
+                    // We check if this was an abstention case using raw allergens from the document root
+                    val rawAllergens = doc.getString("rawAllergens") ?: ""
+                    val isAbstentionCase = rawAllergens.equals("None", ignoreCase = true) ||
+                            rawAllergens.equals("empty", ignoreCase = true) ||
+                            rawAllergens.isBlank()
+
+                    if (isAbstentionCase) {
+                        countAbstentionCases += 1.0
+                        if ((valMap["isAbstentionSuccess"] as? Boolean) == true) {
+                            countAbstentionSuccess += 1.0
+                        }
+                    }
+                }
+
+                // --- Accumulate Efficiency ---
+                if (effMap != null) {
+                    sumLat += (effMap["latencyMs"] as? Number)?.toDouble() ?: 0.0
+                    sumTtft += (effMap["ttft"] as? Number)?.toDouble() ?: 0.0
+                    sumItps += (effMap["itps"] as? Number)?.toDouble() ?: 0.0
+                    sumOtps += (effMap["otps"] as? Number)?.toDouble() ?: 0.0
+                    sumOet += (effMap["oet"] as? Number)?.toDouble() ?: 0.0
+
+                    sumJavaKb += (effMap["javaHeapKb"] as? Number)?.toDouble() ?: 0.0
+                    sumNativeKb += (effMap["nativeHeapKb"] as? Number)?.toDouble() ?: 0.0
+                    sumPssKb += (effMap["totalPssKb"] as? Number)?.toDouble() ?: 0.0
+                }
             }
+
+            // --- 4. Calculate Averages ---
+
+            // Safety Rates (0.0 to 100.0)
+            val avgHallucinationRate = (countHallucination / count) * 100.0
+            val avgOverPredictionRate = (countOverPrediction / count) * 100.0
+            val abstentionAccuracy = if (countAbstentionCases > 0) {
+                (countAbstentionSuccess / countAbstentionCases) * 100.0
+            } else {
+                0.0
+            }
+
+            // Memory Conversion (Average KB -> MB)
+            // 1 KB = 1/1024 MB
+            val avgJavaMb = (sumJavaKb / count) / 1024.0
+            val avgNativeMb = (sumNativeKb / count) / 1024.0
+            val avgPssMb = (sumPssKb / count) / 1024.0
 
             // Calls the PUBLIC saveBenchmark
             saveBenchmark(
                 modelName = modelName,
-                avgPrecision = 0.0, // Fill with real calcs if needed
-                avgRecall = 0.0,
+                avgPrecision = sumPrecision / count,
+                avgRecall = sumRecall / count,
                 avgF1 = sumF1 / count,
-                avgEmr = 0.0, avgHamming = 0.0, avgFnr = 0.0,
-                abstentionAccuracy = 0.0, hallucinationRate = 0.0, overPredictionRate = 0.0,
+                avgEmr = sumEmr / count,
+                avgHamming = sumHamming / count,
+                avgFnr = sumFnr / count,
+
+                abstentionAccuracy = abstentionAccuracy,
+                hallucinationRate = avgHallucinationRate,
+                overPredictionRate = avgOverPredictionRate,
+
                 avgLatency = sumLat / count,
-                avgTtft = 0.0, avgItps = 0.0, avgOtps = 0.0, avgOet = 0.0,
-                avgJavaHeap = 0.0, avgNativeHeap = 0.0, avgPss = 0.0
+                avgTtft = sumTtft / count,
+                avgItps = sumItps / count,
+                avgOtps = sumOtps / count,
+                avgOet = sumOet / count,
+
+                avgJavaHeap = avgJavaMb,
+                avgNativeHeap = avgNativeMb,
+                avgPss = avgPssMb
             )
 
         } catch (e: Exception) {
             Log.e("FIREBASE", "Error updating dashboard: ${e.message}")
         }
     }
-
     // =========================================================================
     // PART 4: Public Benchmark Saver (MUST BE PUBLIC)
     // =========================================================================
