@@ -116,7 +116,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // --- Core Logic: Single Prediction ---
+    // --- Core Logic: Single Prediction (UPDATED FOR DASHBOARD SYNC) ---
+// --- Core Logic: Single Prediction (FIXED: Non-Blocking Save) ---
     private fun predictAndShowSingleItem(item: FoodItem) {
         lifecycleScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
@@ -128,6 +129,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             try {
+                // 1. Prepare Model
                 val modelPath = copyModelToInternalStorage(this@MainActivity, selectedModelFilename)
                 if (modelPath.isEmpty()) {
                     throw Exception("Model file not found! Did you put $selectedModelFilename in assets?")
@@ -135,11 +137,13 @@ class MainActivity : AppCompatActivity() {
 
                 val prompt = buildPrompt(item.ingredients)
 
+                // 2. Run Inference
                 val javaBefore = MemoryReader.javaHeapKb()
                 val nativeBefore = MemoryReader.nativeHeapKb()
                 val pssBefore = MemoryReader.totalPssKb()
                 val startNs = System.nanoTime()
 
+                // This takes time, which is fine (generating text)
                 val rawResult = inferAllergens(prompt, modelPath, true)
 
                 val latencyMs = (System.nanoTime() - startNs) / 1_000_000
@@ -161,12 +165,24 @@ class MainActivity : AppCompatActivity() {
                 )
 
                 val result = PredictionResult(item, predicted, metrics = finalMetrics)
-                firebaseService.savePredictionResult(result)
 
+                // --- FIX: FIRE AND FORGET ---
+                // We launch a NEW independent coroutine to handle saving.
+                // We do NOT wait for this to finish.
+                kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        firebaseService.savePredictionAndRefreshDashboard(result, selectedModelFilename)
+                        Log.d("MAIN", "Background save completed")
+                    } catch (e: Exception) {
+                        Log.e("MAIN", "Background save failed", e)
+                    }
+                }
+
+                // 3. Open Screen IMMEDIATELY
                 withContext(Dispatchers.Main) {
                     hideProgress()
                     btnPredictItem.isEnabled = true
-                    // Launch Result Activity
+
                     val intent = Intent(this@MainActivity, ResultsActivity::class.java).apply {
                         putParcelableArrayListExtra("results", ArrayList(listOf(result)))
                     }
@@ -183,7 +199,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // --- Core Logic: Batch Prediction (UPDATED) ---
+    // --- Core Logic: Batch Prediction (No Changes Needed Here) ---
     private fun startBatchPrediction(dataset: Dataset) {
         lifecycleScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
@@ -343,8 +359,9 @@ class MainActivity : AppCompatActivity() {
             val avgNativeHeap = if (validSamples > 0) totalNativeHeap / validSamples else 0.0
             val avgPss = if (validSamples > 0) totalPss / validSamples else 0.0
 
-            // --- Save Benchmark Summary (Updated to pass new metrics) ---
+            // --- Save Benchmark Summary ---
             try {
+                // This saves the calculated averages directly to Dashboard collections
                 firebaseService.saveBenchmark(
                     modelName = selectedModelFilename,
                     // Quality
