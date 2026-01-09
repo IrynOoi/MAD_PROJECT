@@ -1,160 +1,155 @@
 //DashboardActivity.kt
-
 package edu.utem.ftmk.slm02
 
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.view.View
+import android.view.Gravity
+import android.widget.ImageButton
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity() {
-    private lateinit var firebaseService: FirebaseService
 
-    // 3 Tables (Combined Efficiency)
     private lateinit var tableQuality: TableLayout
     private lateinit var tableSafety: TableLayout
     private lateinit var tableEfficiency: TableLayout
+    private val firebaseService = FirebaseService()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        firebaseService = FirebaseService()
+        val btnBack = findViewById<ImageButton>(R.id.btnBackDashboard)
+        btnBack.setOnClickListener { finish() }
 
-        // Find Views
         tableQuality = findViewById(R.id.tableQuality)
         tableSafety = findViewById(R.id.tableSafety)
         tableEfficiency = findViewById(R.id.tableEfficiency)
 
-        // Back Button
-        findViewById<View>(R.id.btnBackDashboard).setOnClickListener {
-            finish()
-        }
-
-        loadBenchmarks()
+        fetchAndDisplayBenchmarks()
     }
 
-    private fun loadBenchmarks() {
+    private fun fetchAndDisplayBenchmarks() {
         lifecycleScope.launch {
-            // Clear tables
-            tableQuality.removeAllViews()
-            tableSafety.removeAllViews()
-            tableEfficiency.removeAllViews()
-
-            // 1. Setup Headers
-            // Table 1: Quality (Table 2 in PDF)
-            setupHeader(tableQuality, listOf("Model", "F1", "Prec", "Rec", "EMR", "Hamm", "FNR"))
-
-            // Table 2: Safety (Table 3 in PDF)
-            setupHeader(tableSafety, listOf("Model", "TNR", "Hallu%", "Over%"))
-
-            // Table 3: Efficiency (Table 4 in PDF)
-            setupHeader(tableEfficiency, listOf("Model", "Lat(s)", "TTFT(s)", "ITPS", "OTPS", "OET(s)", "Total(s)", "Java", "Nat", "PSS"))
-
-            val data = firebaseService.getAllBenchmarks()
-            // Updated sort key to match new Firebase attribute
-            val sortedData = data.sortedByDescending { it["F1 Score"]?.toDoubleOrZero() ?: 0.0 }
-
-            sortedData.forEach { metrics ->
-                val name = (metrics["modelName"] as? String ?: "?").replace(".gguf", "")
-
-                // Populate Table 1: Quality (Keys updated to match PDF)
-                val f1 = metrics["F1 Score"].toDoubleOrZero()
-                val prec = metrics["Precision"].toDoubleOrZero()
-                val rec = metrics["Recall"].toDoubleOrZero()
-                val emr = metrics["Exact Match Ratio"].toDoubleOrZero()
-                val hamm = metrics["Hamming Loss"].toDoubleOrZero()
-                val fnr = metrics["False Negative Rate"].toDoubleOrZero()
-
-                addRow(tableQuality, listOf(
-                    name,
-                    "%.2f".format(f1),
-                    "%.2f".format(prec),
-                    "%.2f".format(rec),
-                    "%.2f".format(emr),
-                    "%.3f".format(hamm),
-                    "%.2f".format(fnr)
-                ))
-
-                // Populate Table 2: Safety (Keys updated to match PDF)
-                val safe = metrics["Abstention Accuracy"].toDoubleOrZero()
-                val hallu = metrics["Hallucination Rate"].toDoubleOrZero()
-                val over = metrics["Over-Prediction Rate"].toDoubleOrZero()
-
-                addRow(tableSafety, listOf(
-                    name,
-                    "%.0f%%".format(safe), // TNR
-                    "%.0f%%".format(hallu),
-                    "%.0f%%".format(over)
-                ))
-
-                // Populate Table 3: Efficiency (Keys updated to match PDF)
-                val lat = metrics["Latency"].toDoubleOrZero() / 1000.0 // ms to sec
-                val ttft = metrics["Time-to-First-Token"].toDoubleOrZero() / 1000.0     // ms to sec
-                val itps = metrics["Input Token Per Second"].toDoubleOrZero()
-                val otps = metrics["Output Token Per Second"].toDoubleOrZero()
-                val oet = metrics["Output Evaluation Time"].toDoubleOrZero() / 1000.0      // ms to sec
-                val totalTime = metrics["Total Time"].toDoubleOrZero() / 1000.0 // ms to sec
-
-                val java = metrics["Java Heap"].toDoubleOrZero() // Already MB
-                val nat = metrics["Native Heap"].toDoubleOrZero() // Already MB
-                val pss = metrics["Proportional Set Size"].toDoubleOrZero() // Already MB
-
-                addRow(tableEfficiency, listOf(
-                    name,
-                    "%.2f".format(lat),
-                    "%.2f".format(ttft),
-                    "%.1f".format(itps),
-                    "%.1f".format(otps),
-                    "%.2f".format(oet),
-                    "%.2f".format(totalTime),
-                    "%.1f".format(java),
-                    "%.1f".format(nat),
-                    "%.1f".format(pss)
-                ))
+            try {
+                val data = firebaseService.getAllBenchmarks()
+                if (data.isNotEmpty()) {
+                    populateQualityTable(data)
+                    populateSafetyTable(data)
+                    populateEfficiencyTable(data)
+                } else {
+                    Toast.makeText(this@DashboardActivity, "No benchmark data found.", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@DashboardActivity, "Error loading dashboard.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    // Helper to safely convert any Number (Int, Long, Double) to Double
-    private fun Any?.toDoubleOrZero(): Double {
-        return (this as? Number)?.toDouble() ?: 0.0
+    // Table 1: Quality Metrics
+    private fun populateQualityTable(data: List<Map<String, Any>>) {
+        tableQuality.removeAllViews()
+        val headers = listOf("Model Name", "Precision", "Recall", "F1 Score", "Exact Match", "Hamming Loss", "FNR (%)")
+        addHeaderRow(tableQuality, headers)
+
+        for (row in data) {
+            val model = row["modelName"]?.toString() ?: "Unknown"
+            val prec = (row["Precision"] as? Number)?.toDouble() ?: 0.0
+            val rec = (row["Recall"] as? Number)?.toDouble() ?: 0.0
+            val f1 = (row["F1 Score"] as? Number)?.toDouble() ?: 0.0
+            val emr = (row["Exact Match Ratio (%)"] as? Number)?.toDouble() ?: 0.0
+            val ham = (row["Hamming Loss"] as? Number)?.toDouble() ?: 0.0
+            val fnr = (row["False Negative Rate (%)"] as? Number)?.toDouble() ?: 0.0
+
+            val values = listOf(
+                model, "%.2f".format(prec), "%.2f".format(rec), "%.2f".format(f1),
+                "%.1f%%".format(emr), "%.3f".format(ham), "%.1f%%".format(fnr)
+            )
+            addDataRow(tableQuality, values)
+        }
     }
 
-    private fun setupHeader(table: TableLayout, headers: List<String>) {
+    // Table 2: Safety Metrics
+    private fun populateSafetyTable(data: List<Map<String, Any>>) {
+        tableSafety.removeAllViews()
+        val headers = listOf("Model Name", "Hallucination (%)", "Over-Pred (%)", "Abstention Acc (%)")
+        addHeaderRow(tableSafety, headers)
+
+        for (row in data) {
+            val model = row["modelName"]?.toString() ?: "Unknown"
+            val hall = (row["Hallucination Rate (%)"] as? Number)?.toDouble() ?: 0.0
+            val over = (row["Over-Prediction Rate (%)"] as? Number)?.toDouble() ?: 0.0
+            val abst = (row["Abstention Accuracy (%)"] as? Number)?.toDouble() ?: 0.0
+
+            val values = listOf(
+                model, "%.1f%%".format(hall), "%.1f%%".format(over), "%.1f%%".format(abst)
+            )
+            addDataRow(tableSafety, values)
+        }
+    }
+
+    // Table 3: Efficiency Metrics
+    private fun populateEfficiencyTable(data: List<Map<String, Any>>) {
+        tableEfficiency.removeAllViews()
+        val headers = listOf("Model Name", "Latency (s)", "Total Time (s)", "TTFT (s)", "Input (t/s)", "Output (t/s)", "Eval Time (s)", "Java (MB)", "Native (MB)", "PSS (MB)")
+        addHeaderRow(tableEfficiency, headers)
+
+        for (row in data) {
+            val model = row["modelName"]?.toString() ?: "Unknown"
+
+            // Reading NEW keys with Units from Firebase
+            val lat = (row["Latency (s)"] as? Number)?.toDouble() ?: 0.0
+            val total = (row["Total Time (s)"] as? Number)?.toDouble() ?: 0.0
+            val ttft = (row["Time-to-First-Token (s)"] as? Number)?.toDouble() ?: 0.0
+            val itps = (row["Input Token Per Second (t/s)"] as? Number)?.toDouble() ?: 0.0
+            val otps = (row["Output Token Per Second (t/s)"] as? Number)?.toDouble() ?: 0.0
+            val oet = (row["Output Evaluation Time (s)"] as? Number)?.toDouble() ?: 0.0
+            val java = (row["Java Heap (MB)"] as? Number)?.toDouble() ?: 0.0
+            val nat = (row["Native Heap (MB)"] as? Number)?.toDouble() ?: 0.0
+            val pss = (row["Proportional Set Size (MB)"] as? Number)?.toDouble() ?: 0.0
+
+            val values = listOf(
+                model, "%.2f".format(lat), "%.2f".format(total), "%.2f".format(ttft),
+                "%.1f".format(itps), "%.1f".format(otps), "%.2f".format(oet),
+                "%.1f".format(java), "%.1f".format(nat), "%.1f".format(pss)
+            )
+            addDataRow(tableEfficiency, values)
+        }
+    }
+
+    private fun addHeaderRow(table: TableLayout, headers: List<String>) {
         val row = TableRow(this)
         row.setBackgroundColor(Color.parseColor("#E0E0E0"))
-        headers.forEach { text ->
-            val tv = TextView(this).apply {
-                this.text = text
-                setPadding(16, 16, 16, 16)
-                textSize = 12f
-                setTypeface(null, Typeface.BOLD)
-                setTextColor(Color.BLACK)
-            }
+        row.setPadding(8, 16, 8, 16)
+        for (title in headers) {
+            val tv = TextView(this)
+            tv.text = title
+            tv.setTypeface(null, Typeface.BOLD)
+            tv.setTextColor(Color.BLACK)
+            tv.setPadding(16, 16, 16, 16)
+            tv.gravity = Gravity.CENTER
             row.addView(tv)
         }
         table.addView(row)
     }
 
-    private fun addRow(table: TableLayout, values: List<String>) {
+    private fun addDataRow(table: TableLayout, values: List<String>) {
         val row = TableRow(this)
-        values.forEach { text ->
-            val tv = TextView(this).apply {
-                this.text = text
-                setPadding(16, 16, 16, 16)
-                textSize = 12f
-                setTextColor(Color.DKGRAY)
-            }
+        row.setPadding(8, 16, 8, 16)
+        for (value in values) {
+            val tv = TextView(this)
+            tv.text = value
+            tv.setTextColor(Color.DKGRAY)
+            tv.setPadding(16, 16, 16, 16)
+            tv.gravity = Gravity.CENTER
             row.addView(tv)
         }
-        row.setBackgroundResource(android.R.drawable.list_selector_background)
         table.addView(row)
     }
 }

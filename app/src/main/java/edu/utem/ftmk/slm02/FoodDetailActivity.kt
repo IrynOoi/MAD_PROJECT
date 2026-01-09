@@ -40,15 +40,20 @@ class FoodDetailActivity : AppCompatActivity() {
         // 2. Composition
         findViewById<TextView>(R.id.tvDetailIngredients).text = food.ingredients
 
-        val rawAllergens = if (food.allergens.isNullOrEmpty() || food.allergens == "empty")
-            "None" else food.allergens
+        val rawAllergens = if (food.allergens.isNullOrEmpty() || food.allergens.equals("empty", ignoreCase = true))
+            "EMPTY" else food.allergens
         findViewById<TextView>(R.id.tvDetailRawAllergens).text = rawAllergens
 
-        val mappedAllergens = if (food.allergensMapped.isNullOrEmpty())
-            "None" else food.allergensMapped
+        // Changed "None" to "EMPTY" for Mapped Allergens
+        val mappedAllergens = if (food.allergensMapped.isNullOrEmpty() || food.allergensMapped.equals("empty", ignoreCase = true))
+            "EMPTY" else food.allergensMapped
+        // 3. Predicted (Updated with Model Name)
+
+        findViewById<TextView>(R.id.tvDetailModelName).text = result.modelName
         findViewById<TextView>(R.id.tvDetailMappedAllergens).text = mappedAllergens
 
-        // 3. Predicted
+        // 3. Predicted (Updated with Model Name)
+        findViewById<TextView>(R.id.tvDetailModelName).text = result.modelName // <--- ADDED
         findViewById<TextView>(R.id.tvDetailPredicted).text = result.predictedAllergens ?: "No Prediction"
 
         // 4. Timestamp
@@ -84,8 +89,6 @@ class FoodDetailActivity : AppCompatActivity() {
             result.foodItem.allergensMapped,
             result.predictedAllergens ?: ""
         )
-
-        // --- UPDATED to include (0%) or (100%) ---
 
         // Hallucination
         val tvHallu = findViewById<TextView>(R.id.tvValHallucination)
@@ -127,16 +130,19 @@ class FoodDetailActivity : AppCompatActivity() {
         val inf = result.metrics
 
         if (inf != null) {
-            // --- UPDATED with Total Time ---
-            findViewById<TextView>(R.id.tvValLatency).text = "${inf.latencyMs} ms"
-            findViewById<TextView>(R.id.tvValTotalTime).text = "${inf.latencyMs} ms" // Same as Latency
+            // Note: These IDs match the XML. Ensure your XML is updated as per above.
+            val latencySec = inf.latencyMs / 1000.0
+            val ttftSec = inf.ttft / 1000.0
+            val oetSec = inf.oet / 1000.0
 
-            findViewById<TextView>(R.id.tvValTTFT).text = "${inf.ttft} ms"
-            findViewById<TextView>(R.id.tvValOET).text = "${inf.oet} ms"
+            findViewById<TextView>(R.id.tvValLatency).text = "%.3f s".format(latencySec)
+            findViewById<TextView>(R.id.tvValTotalTime).text = "%.3f s".format(latencySec)
+            findViewById<TextView>(R.id.tvValTTFT).text = "%.3f s".format(ttftSec)
+            findViewById<TextView>(R.id.tvValOET).text = "%.3f s".format(oetSec)
+
             findViewById<TextView>(R.id.tvValITPS).text = "${inf.itps} t/s"
             findViewById<TextView>(R.id.tvValOTPS).text = "${inf.otps} t/s"
 
-            // Memory (Convert KB to MB)
             val javaMb = inf.javaHeapKb / 1024.0
             val nativeMb = inf.nativeHeapKb / 1024.0
             val pssMb = inf.totalPssKb / 1024.0

@@ -1,384 +1,777 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout
+
         xmlns:android="http://schemas.android.com/apk/res/android"
+
         xmlns:app="http://schemas.android.com/apk/res-auto"
+
         xmlns:tools="http://schemas.android.com/tools"
+
         android:layout_width="match_parent"
+
         android:layout_height="match_parent"
+
         android:background="#F2F2F2"
+
         tools:ignore="MissingClass">
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
+
             android:id="@+id/customAppBar"
+
             android:layout_width="0dp"
+
             android:layout_height="56dp"
+
             android:background="#3F51B5"
+
             android:elevation="4dp"
+
             app:layout_constraintTop_toTopOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
+
             app:layout_constraintEnd_toEndOf="parent">
+
+
 
         <ImageButton
+
                 android:id="@+id/btnBackDetail"
+
                 android:layout_width="48dp"
+
                 android:layout_height="48dp"
+
                 android:background="?attr/selectableItemBackgroundBorderless"
+
                 android:scaleType="fitCenter"
+
                 android:src="@drawable/baseline_keyboard_arrow_left_24"
+
                 app:tint="@android:color/white"
+
                 app:layout_constraintStart_toStartOf="parent"
+
                 app:layout_constraintTop_toTopOf="parent"
+
                 app:layout_constraintBottom_toBottomOf="parent"
+
                 android:layout_marginStart="4dp"
+
                 android:contentDescription="Back"/>
 
+
+
         <TextView
+
                 android:id="@+id/tvTitle"
+
                 android:layout_width="0dp"
+
                 android:layout_height="wrap_content"
+
                 android:layout_marginStart="8dp"
+
                 android:text="Food Analysis Details"
+
                 android:textAlignment="center"
+
                 android:textColor="@color/white"
+
                 android:textSize="20sp"
+
                 android:textStyle="bold"
+
                 app:layout_constraintBottom_toBottomOf="parent"
+
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toEndOf="@id/btnBackDetail"
+
                 app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
     <ScrollView
+
             android:layout_width="0dp"
+
             android:layout_height="0dp"
+
             android:padding="16dp"
+
             android:clipToPadding="false"
+
             app:layout_constraintTop_toBottomOf="@id/customAppBar"
+
             app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
+
             app:layout_constraintEnd_toEndOf="parent">
 
+
+
         <LinearLayout
+
                 android:layout_width="match_parent"
+
                 android:layout_height="wrap_content"
+
                 android:orientation="vertical">
 
+
+
             <androidx.cardview.widget.CardView
+
                     android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
+
                     app:cardCornerRadius="12dp"
+
                     app:cardElevation="2dp"
+
                     app:cardBackgroundColor="@android:color/white"
+
                     android:layout_marginBottom="16dp">
 
+
+
                 <LinearLayout
+
                         android:layout_width="match_parent"
+
                         android:layout_height="wrap_content"
+
                         android:orientation="vertical"
+
                         android:padding="16dp">
 
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Food Name:"
-                            android:textStyle="bold"
-                            android:textColor="#3F51B5"
-                            android:textSize="14sp"/>
+
 
                     <TextView
-                            android:id="@+id/tvDetailName"
-                            android:layout_width="match_parent"
+
+                            android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"
+
+                            android:text="Food Name:"
+
+                            android:textStyle="bold"
+
+                            android:textColor="#3F51B5"
+
+                            android:textSize="14sp"/>
+
+
+
+                    <TextView
+
+                            android:id="@+id/tvDetailName"
+
+                            android:layout_width="match_parent"
+
+                            android:layout_height="wrap_content"
+
                             android:text="..."
+
                             android:textSize="18sp"
+
                             android:textColor="#000000"
+
                             android:layout_marginBottom="12dp" />
 
+
+
                     <View android:background="#EEEEEE" android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginBottom="12dp"/>
+
+
 
                     <LinearLayout
+
                             android:layout_width="match_parent"
+
                             android:layout_height="wrap_content"
+
                             android:orientation="horizontal"
+
                             android:layout_marginBottom="12dp">
+
                         <TextView android:text="Data ID: " android:textStyle="bold" android:textColor="#3F51B5" android:textSize="14sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvDetailId" android:text="#0" android:textColor="#000000" android:textSize="14sp" android:layout_marginStart="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     </LinearLayout>
+
+
 
                     <View android:background="#EEEEEE" android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginBottom="12dp"/>
 
+
+
                     <TextView
+
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"
+
                             android:text="Source Link:"
+
                             android:textStyle="bold"
+
                             android:textColor="#3F51B5"
+
                             android:textSize="14sp"/>
+
                     <TextView
+
                             android:id="@+id/tvDetailLink"
+
                             android:layout_width="match_parent"
+
                             android:layout_height="wrap_content"
+
                             android:text="..."
+
                             android:autoLink="web"
+
                             android:textColorLink="#3F51B5"
+
                             android:textSize="14sp"/>
+
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
+
+
             <androidx.cardview.widget.CardView
+
                     android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
+
                     app:cardCornerRadius="12dp"
+
                     app:cardElevation="2dp"
+
                     app:cardBackgroundColor="@android:color/white"
+
                     android:layout_marginBottom="16dp">
 
+
+
                 <LinearLayout
+
                         android:layout_width="match_parent"
+
                         android:layout_height="wrap_content"
+
                         android:orientation="vertical"
+
                         android:padding="16dp">
 
+
+
                     <TextView
+
                             android:text="Food Composition"
+
                             android:textSize="18sp"
+
                             android:textStyle="bold"
+
                             android:textColor="#3F51B5"
+
                             android:layout_marginBottom="12dp"
+
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"/>
+
+
 
                     <TextView android:text="Ingredients" android:textStyle="bold" android:textColor="#555555" android:textSize="14sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     <TextView android:id="@+id/tvDetailIngredients" android:text="..." android:textColor="#000000" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 
+
+
                     <View android:background="#EEEEEE" android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginBottom="12dp"/>
+
+
 
                     <TextView android:text="Raw Allergens (Dataset)" android:textStyle="bold" android:textColor="#555555" android:textSize="14sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     <TextView android:id="@+id/tvDetailRawAllergens" android:text="..." android:textColor="#000000" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+
 
                     <View android:background="#EEEEEE" android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginBottom="12dp"/>
 
+
+
                     <TextView android:text="Mapped Allergens (Expected)" android:textStyle="bold" android:textColor="#555555" android:textSize="14sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     <TextView android:id="@+id/tvDetailMappedAllergens" android:text="..." android:textColor="#000000" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
+
+
             <androidx.cardview.widget.CardView
+
                     android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
+
                     app:cardCornerRadius="12dp"
+
                     app:cardElevation="2dp"
+
                     app:cardBackgroundColor="@android:color/white"
+
                     android:layout_marginBottom="16dp">
 
+
+
                 <LinearLayout
+
                         android:layout_width="match_parent"
+
                         android:layout_height="wrap_content"
+
                         android:orientation="vertical"
+
                         android:padding="16dp">
 
+
+
                     <TextView
+
                             android:text="AI Analysis Results"
+
                             android:textSize="18sp"
+
                             android:textStyle="bold"
+
                             android:textColor="#3F51B5"
+
                             android:layout_marginBottom="12dp"
+
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"/>
+
+
+
+                    <TextView android:text="AI Model Used" android:textStyle="bold" android:textColor="#555555" android:textSize="14sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                    <TextView android:id="@+id/tvDetailModelName" android:text="..." android:textSize="16sp" android:textColor="#000000" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+
+
+                    <View android:background="#EEEEEE" android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginBottom="12dp"/>
+
+
 
                     <TextView android:text="Predicted Allergens" android:textStyle="bold" android:textColor="#555555" android:textSize="14sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     <TextView android:id="@+id/tvDetailPredicted" android:text="..." android:textSize="16sp" android:textStyle="bold" android:textColor="#000000" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 
+
+
                     <LinearLayout
+
                             android:layout_width="match_parent"
+
                             android:layout_height="wrap_content"
+
                             android:orientation="vertical"
-                            android:padding="16dp">
+
+                            android:layout_marginTop="12dp">
+
+
 
                         <TextView
+
                                 android:text="Timestamp"
+
                                 android:textStyle="bold"
+
                                 android:textColor="#555555"
+
                                 android:textSize="14sp"
+
                                 android:layout_width="wrap_content"
+
                                 android:layout_height="wrap_content"/>
+
                         <TextView
+
                                 android:id="@+id/tvDetailTimestamp"
+
                                 android:text="..."
+
                                 android:textSize="12sp"
+
                                 android:textColor="#000000"
+
                                 android:layout_width="match_parent"
+
                                 android:layout_height="wrap_content"/>
+
+
 
                     </LinearLayout>
+
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
+
+
             <androidx.cardview.widget.CardView
+
                     android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
+
                     app:cardCornerRadius="12dp"
+
                     app:cardElevation="2dp"
-                    app:cardBackgroundColor="#E8F5E9"
+
+                    app:cardBackgroundColor="@android:color/white"
+
                     android:layout_marginBottom="16dp">
 
+
+
                 <LinearLayout
+
                         android:layout_width="match_parent"
+
                         android:layout_height="wrap_content"
+
                         android:orientation="vertical"
+
                         android:padding="16dp">
 
+
+
                     <TextView
+
                             android:text="Validation: Quality Metrics"
+
                             android:textSize="16sp"
+
                             android:textStyle="bold"
-                            android:textColor="#2E7D32"
+
+                            android:textColor="#3F51B5"
+
                             android:layout_marginBottom="8dp"
+
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"/>
 
+
+
                     <GridLayout
+
                             android:layout_width="match_parent"
+
                             android:layout_height="wrap_content"
+
                             android:columnCount="2"
+
                             android:rowCount="3">
 
+
+
                         <TextView android:text="Precision:" android:textStyle="bold" android:textColor="#555" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValPrecision" android:text="0.00" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="Recall:" android:textStyle="bold" android:textColor="#555" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValRecall" android:text="0.00" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="F1 Score:" android:textStyle="bold" android:textColor="#555" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValF1" android:text="0.00" android:gravity="end" android:textStyle="bold" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="Exact Match:" android:textStyle="bold" android:textColor="#555" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValExactMatch" android:text="NO" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="Hamming Loss:" android:textStyle="bold" android:textColor="#555" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValHamming" android:text="0.00" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="False Neg Rate:" android:textStyle="bold" android:textColor="#555" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValFNR" android:text="0.00" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     </GridLayout>
+
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
+
+
             <androidx.cardview.widget.CardView
+
                     android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
+
                     app:cardCornerRadius="12dp"
+
                     app:cardElevation="2dp"
-                    app:cardBackgroundColor="#FFF3E0"
+
+                    app:cardBackgroundColor="@android:color/white"
+
                     android:layout_marginBottom="16dp">
 
+
+
                 <LinearLayout
+
                         android:layout_width="match_parent"
+
                         android:layout_height="wrap_content"
+
                         android:orientation="vertical"
+
                         android:padding="16dp">
 
+
+
                     <TextView
+
                             android:text="Validation: Safety Metrics"
+
                             android:textSize="16sp"
+
                             android:textStyle="bold"
-                            android:textColor="#E65100"
+
+                            android:textColor="#3F51B5"
+
                             android:layout_marginBottom="8dp"
+
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"/>
 
-                    <LinearLayout android:orientation="horizontal" android:layout_marginBottom="4dp" android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:text="Hallucination:" android:textStyle="bold" android:textColor="#555" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
-                        <TextView android:id="@+id/tvValHallucination" android:text="No" android:gravity="end" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                    </LinearLayout>
+
 
                     <LinearLayout android:orientation="horizontal" android:layout_marginBottom="4dp" android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <TextView android:text="Over-Prediction:" android:textStyle="bold" android:textColor="#555" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
-                        <TextView android:id="@+id/tvValOverPred" android:text="No" android:gravity="end" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                        <TextView android:text="Hallucination:" android:textStyle="bold" android:textColor="#555" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
+
+                        <TextView android:id="@+id/tvValHallucination" android:text="No" android:gravity="end" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     </LinearLayout>
+
+
+
+                    <LinearLayout android:orientation="horizontal" android:layout_marginBottom="4dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+
+                        <TextView android:text="Over-Prediction:" android:textStyle="bold" android:textColor="#555" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
+
+                        <TextView android:id="@+id/tvValOverPred" android:text="No" android:gravity="end" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+
 
                     <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+
                         <TextView android:text="Abstention (TNR):" android:textStyle="bold" android:textColor="#555" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValAbstention" android:text="N/A" android:gravity="end" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     </LinearLayout>
+
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
+
+
 
             <androidx.cardview.widget.CardView
+
                     android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
+
                     app:cardCornerRadius="12dp"
+
                     app:cardElevation="2dp"
-                    app:cardBackgroundColor="#E3F2FD"
+
+                    app:cardBackgroundColor="@android:color/white"
+
                     android:layout_marginBottom="16dp">
 
+
+
                 <LinearLayout
+
                         android:layout_width="match_parent"
+
                         android:layout_height="wrap_content"
+
                         android:orientation="vertical"
+
                         android:padding="16dp">
 
+
+
                     <TextView
+
                             android:text="Inference Efficiency (Metrics)"
+
                             android:textSize="16sp"
+
                             android:textStyle="bold"
-                            android:textColor="#1565C0"
+
+                            android:textColor="#3F51B5"
+
                             android:layout_marginBottom="8dp"
+
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"/>
 
-                    <TextView android:text="Time (ms)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+
+                    <TextView android:text="Time (sec)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     <GridLayout
+
                             android:layout_width="match_parent"
+
                             android:layout_height="wrap_content"
+
                             android:columnCount="2"
+
                             android:layout_marginBottom="8dp">
+
+
 
                         <TextView android:text="Latency (Total):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValLatency" android:text="0 ms" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="Total Time:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValTotalTime" android:text="0 ms" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="Time-to-1st-Token:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValTTFT" android:text="0 ms" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="Output Eval Time:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValOET" android:text="0 ms" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     </GridLayout>
+
+
 
                     <TextView android:text="Throughput (Tokens/sec)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     <GridLayout
+
                             android:layout_width="match_parent"
+
                             android:layout_height="wrap_content"
+
                             android:columnCount="2"
+
                             android:layout_marginBottom="8dp">
 
+
+
                         <TextView android:text="Input (ITPS):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValITPS" android:text="0.0" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="Output (OTPS):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValOTPS" android:text="0.0" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     </GridLayout>
+
+
 
                     <TextView android:text="Memory Usage (MB)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     <GridLayout
+
                             android:layout_width="match_parent"
+
                             android:layout_height="wrap_content"
+
                             android:columnCount="2">
 
+
+
                         <TextView android:text="Java Heap:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValJava" android:text="0.0 MB" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="Native Heap:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValNative" android:text="0.0 MB" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+
+
                         <TextView android:text="PSS (System):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                         <TextView android:id="@+id/tvValPSS" android:text="0.0 MB" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
                     </GridLayout>
+
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
+
+
         </LinearLayout>
+
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
