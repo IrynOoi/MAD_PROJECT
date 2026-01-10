@@ -10,11 +10,22 @@
 
 ## UI PREDICTOR LOOK LIKE:
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/d7ea4a11-2afb-43da-b039-e317748bf5a1" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/d7ea4a11-2afb-43da-b039-e317748bf5a1" />
 
 ## Summary of food product (predict all)
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/1eee030a-a5e3-4e2d-9d4b-dc01f3f2daff" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/1eee030a-a5e3-4e2d-9d4b-dc01f3f2daff" />
+
+## Food Analysis Detail
+PART 1:
+
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/d0d7e3a0-8e69-495f-b1c8-d9b5f1702e72" />
+
+PART 2:
+
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/e97868b6-7d2b-4be0-8162-5014d6e3814a" />
+
+
 
 
 ## ADDITIONAL FUNCTIONALITY FROM MAD_ASSIGNMENT:
