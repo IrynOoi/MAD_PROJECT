@@ -36,23 +36,23 @@ PART 2:
 
 PART 1:
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/409fde0a-5f99-4f24-b513-f1c566d42f5b" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/409fde0a-5f99-4f24-b513-f1c566d42f5b" />
 
 
 PART 2:
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/8088fa05-9900-431c-93eb-927285af7191" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/8088fa05-9900-431c-93eb-927285af7191" />
 
 
 # TABLE FOR AND SAFETY METRIC
 
 PART 1:
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/06e99f0d-994d-41d1-bcc3-7e112575d9f6" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/06e99f0d-994d-41d1-bcc3-7e112575d9f6" />
 
 PART 2:
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/2a24da09-8393-4cf7-ad8e-34dc6bfa4764" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/2a24da09-8393-4cf7-ad8e-34dc6bfa4764" />
 
 
 
@@ -62,16 +62,16 @@ PART 2:
 
 PART 1:
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/5b99cd17-18f7-41c0-b7a8-77b6118a7761" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/5b99cd17-18f7-41c0-b7a8-77b6118a7761" />
 
 
 PART 2:
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/7b2e452e-7710-4019-955f-cd920d920d10" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/7b2e452e-7710-4019-955f-cd920d920d10" />
 
 PART 3:
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/06c49fb2-6560-40f7-9472-55235d4b4ca5" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/06c49fb2-6560-40f7-9472-55235d4b4ca5" />
 
 
 
