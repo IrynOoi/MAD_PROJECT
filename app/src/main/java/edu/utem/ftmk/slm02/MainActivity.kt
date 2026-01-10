@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity() {
 
         "Phi-3.5-mini-instruct-Q4_K_M.gguf",
 
+
         "Phi-3-mini-4k-instruct-q4.gguf",
 
         "Vikhr-Gemma-2B-instruct-Q4_K_M.gguf"
@@ -234,9 +235,6 @@ class MainActivity : AppCompatActivity() {
 
 
 // --- Core Logic: Single Prediction (UPDATED FOR DASHBOARD SYNC) ---
-
-// --- Core Logic: Single Prediction (FIXED: Non-Blocking Save) ---
-
     private fun predictAndShowSingleItem(item: FoodItem) {
 
         lifecycleScope.launch(Dispatchers.IO) {
@@ -748,50 +746,33 @@ class MainActivity : AppCompatActivity() {
 // This saves the calculated averages directly to Dashboard collections
 
                 firebaseService.saveBenchmark(
-
                     modelName = selectedModelFilename,
 
-// Quality
-
+                    // Quality
                     avgPrecision = avgPrecision,
-
                     avgRecall = avgRecall,
-
                     avgF1 = avgF1,
-
                     avgEmr = avgEmr,
-
                     avgHamming = avgHamming,
-
                     avgFnr = avgFnr,
 
-// Safety
-
+                    // Safety
                     abstentionAccuracy = abstentionAccuracy,
-
                     hallucinationRate = hallucinationRate,
-
                     overPredictionRate = overPredictionRate,
 
-// Efficiency
-
-                    avgLatency = avgLatency, // This is also used as Total Time
-
+                    // Efficiency
+                    avgLatency = avgLatency,
+                    avgTotalTime = avgLatency,   // ⭐ 补这一行
                     avgTtft = avgTtft,
-
                     avgItps = avgItps,
-
                     avgOtps = avgOtps,
-
                     avgOet = avgOet,
-
-                    avgJavaHeap = avgJavaHeap / 1024.0, // to MB
-
-                    avgNativeHeap = avgNativeHeap / 1024.0, // to MB
-
-                    avgPss = avgPss / 1024.0 // to MB
-
+                    avgJavaHeap = avgJavaHeap / 1024.0,
+                    avgNativeHeap = avgNativeHeap / 1024.0,
+                    avgPss = avgPss / 1024.0
                 )
+
 
                 Log.d("BATCH", "Benchmark saved for $selectedModelFilename")
 

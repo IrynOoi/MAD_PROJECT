@@ -129,20 +129,19 @@
                 android:orientation="vertical">
 
 
-
             <TextView
 
                     android:layout_width="wrap_content"
 
                     android:layout_height="wrap_content"
 
-                    android:text="1. Prediction Quality (Table 2)"
+                    android:text="1. Prediction Quality (Average)"
 
                     android:textStyle="bold"
 
                     android:textColor="#3F51B5"
 
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp" />
 
             <HorizontalScrollView
 
@@ -169,14 +168,13 @@
             </HorizontalScrollView>
 
 
-
             <TextView
 
                     android:layout_width="wrap_content"
 
                     android:layout_height="wrap_content"
 
-                    android:text="2. Safety Metrics (Table 3)"
+                    android:text="2. Safety Metrics (Average)"
 
                     android:textStyle="bold"
 
@@ -209,14 +207,13 @@
             </HorizontalScrollView>
 
 
-
             <TextView
 
                     android:layout_width="wrap_content"
 
                     android:layout_height="wrap_content"
 
-                    android:text="3. On-Device Efficiency (Table 4)"
+                    android:text="3. On-Device Efficiency (Average)"
 
                     android:textStyle="bold"
 

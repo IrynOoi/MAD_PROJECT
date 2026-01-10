@@ -1,4 +1,4 @@
-//DashboardActivity.kt
+// DashboardActivity.kt
 package edu.utem.ftmk.slm02
 
 import android.graphics.Color
@@ -52,14 +52,13 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    // Table 1: Quality Metrics
     private fun populateQualityTable(data: List<Map<String, Any>>) {
         tableQuality.removeAllViews()
-        val headers = listOf("Model Name", "Precision", "Recall", "F1 Score", "Exact Match", "Hamming Loss", "FNR (%)")
+        val headers = listOf("Model", "Prec", "Rec", "F1", "EMR (%)", "Hamm", "FNR (%)")
         addHeaderRow(tableQuality, headers)
 
         for (row in data) {
-            val model = row["modelName"]?.toString() ?: "Unknown"
+            val model = (row["modelName"] as? String ?: "?").replace(".gguf", "")
             val prec = (row["Precision"] as? Number)?.toDouble() ?: 0.0
             val rec = (row["Recall"] as? Number)?.toDouble() ?: 0.0
             val f1 = (row["F1 Score"] as? Number)?.toDouble() ?: 0.0
@@ -75,14 +74,13 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    // Table 2: Safety Metrics
     private fun populateSafetyTable(data: List<Map<String, Any>>) {
         tableSafety.removeAllViews()
-        val headers = listOf("Model Name", "Hallucination (%)", "Over-Pred (%)", "Abstention Acc (%)")
+        val headers = listOf("Model", "Hallu (%)", "Over (%)", "Abst (%)")
         addHeaderRow(tableSafety, headers)
 
         for (row in data) {
-            val model = row["modelName"]?.toString() ?: "Unknown"
+            val model = (row["modelName"] as? String ?: "?").replace(".gguf", "")
             val hall = (row["Hallucination Rate (%)"] as? Number)?.toDouble() ?: 0.0
             val over = (row["Over-Prediction Rate (%)"] as? Number)?.toDouble() ?: 0.0
             val abst = (row["Abstention Accuracy (%)"] as? Number)?.toDouble() ?: 0.0
@@ -94,21 +92,20 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    // Table 3: Efficiency Metrics
     private fun populateEfficiencyTable(data: List<Map<String, Any>>) {
         tableEfficiency.removeAllViews()
-        val headers = listOf("Model Name", "Latency (s)", "Total Time (s)", "TTFT (s)", "Input (t/s)", "Output (t/s)", "Eval Time (s)", "Java (MB)", "Native (MB)", "PSS (MB)")
+        val headers = listOf("Model", "Lat(s)", "Total(s)", "TTFT(s)", "ITPS(t/s)", "OTPS(t/s)", "OET(s)", "Java(MB)", "Nat(MB)", "PSS(MB)")
         addHeaderRow(tableEfficiency, headers)
 
         for (row in data) {
-            val model = row["modelName"]?.toString() ?: "Unknown"
+            val model = (row["modelName"] as? String ?: "?").replace(".gguf", "")
 
             // Reading NEW keys with Units from Firebase
             val lat = (row["Latency (s)"] as? Number)?.toDouble() ?: 0.0
             val total = (row["Total Time (s)"] as? Number)?.toDouble() ?: 0.0
             val ttft = (row["Time-to-First-Token (s)"] as? Number)?.toDouble() ?: 0.0
-            val itps = (row["Input Token Per Second (t/s)"] as? Number)?.toDouble() ?: 0.0
-            val otps = (row["Output Token Per Second (t/s)"] as? Number)?.toDouble() ?: 0.0
+            val itps = (row["Input Token Per Second (tokens/s)"] as? Number)?.toDouble() ?: 0.0
+            val otps = (row["Output Token Per Second (tokens/s)"] as? Number)?.toDouble() ?: 0.0
             val oet = (row["Output Evaluation Time (s)"] as? Number)?.toDouble() ?: 0.0
             val java = (row["Java Heap (MB)"] as? Number)?.toDouble() ?: 0.0
             val nat = (row["Native Heap (MB)"] as? Number)?.toDouble() ?: 0.0

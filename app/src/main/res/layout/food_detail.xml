@@ -621,151 +621,78 @@
 
 
             <androidx.cardview.widget.CardView
-
                     android:layout_width="match_parent"
-
                     android:layout_height="wrap_content"
-
                     app:cardCornerRadius="12dp"
-
                     app:cardElevation="2dp"
-
                     app:cardBackgroundColor="@android:color/white"
-
                     android:layout_marginBottom="16dp">
 
-
-
                 <LinearLayout
-
                         android:layout_width="match_parent"
-
                         android:layout_height="wrap_content"
-
                         android:orientation="vertical"
-
                         android:padding="16dp">
 
-
-
                     <TextView
-
                             android:text="Inference Efficiency (Metrics)"
-
                             android:textSize="16sp"
-
                             android:textStyle="bold"
-
                             android:textColor="#3F51B5"
-
                             android:layout_marginBottom="8dp"
-
                             android:layout_width="wrap_content"
-
                             android:layout_height="wrap_content"/>
 
-
-
-                    <TextView android:text="Time (sec)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
+                    <TextView android:text="Time (s)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     <GridLayout
-
                             android:layout_width="match_parent"
-
                             android:layout_height="wrap_content"
-
                             android:columnCount="2"
-
                             android:layout_marginBottom="8dp">
 
+                        <TextView android:text="Latency (s):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvValLatency" android:text="0 s" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
+                        <TextView android:text="Total Time (s):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvValTotalTime" android:text="0 s" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
-                        <TextView android:text="Latency (Total):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:text="Time-to-1st-Token (s):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvValTTFT" android:text="0 s" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
-                        <TextView android:id="@+id/tvValLatency" android:text="0 ms" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-
-
-                        <TextView android:text="Total Time:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-                        <TextView android:id="@+id/tvValTotalTime" android:text="0 ms" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-
-
-                        <TextView android:text="Time-to-1st-Token:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-                        <TextView android:id="@+id/tvValTTFT" android:text="0 ms" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-
-
-                        <TextView android:text="Output Eval Time:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-                        <TextView android:id="@+id/tvValOET" android:text="0 ms" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
+                        <TextView android:text="Output Eval Time (s):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvValOET" android:text="0 s" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     </GridLayout>
 
-
-
-                    <TextView android:text="Throughput (Tokens/sec)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
+                    <TextView android:text="Throughput (tokens/s)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     <GridLayout
-
                             android:layout_width="match_parent"
-
                             android:layout_height="wrap_content"
-
                             android:columnCount="2"
-
                             android:layout_marginBottom="8dp">
 
-
-
-                        <TextView android:text="Input (ITPS):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
+                        <TextView android:text="Input (tokens/s):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                         <TextView android:id="@+id/tvValITPS" android:text="0.0" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
-
-
-                        <TextView android:text="Output (OTPS):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
+                        <TextView android:text="Output (tokens/s):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                         <TextView android:id="@+id/tvValOTPS" android:text="0.0" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
                     </GridLayout>
-
-
 
                     <TextView android:text="Memory Usage (MB)" android:textStyle="bold" android:textSize="12sp" android:textColor="#555" android:layout_marginBottom="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
                     <GridLayout
-
                             android:layout_width="match_parent"
-
                             android:layout_height="wrap_content"
-
                             android:columnCount="2">
 
-
-
-                        <TextView android:text="Java Heap:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
+                        <TextView android:text="Java Heap (MB):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                         <TextView android:id="@+id/tvValJava" android:text="0.0 MB" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
-
-
-                        <TextView android:text="Native Heap:" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
+                        <TextView android:text="Native Heap (MB):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                         <TextView android:id="@+id/tvValNative" android:text="0.0 MB" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
-
-
-                        <TextView android:text="PSS (System):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
+                        <TextView android:text="PSS (MB):" android:layout_columnWeight="1" android:textColor="#000" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                         <TextView android:id="@+id/tvValPSS" android:text="0.0 MB" android:gravity="end" android:textColor="#000" android:layout_columnWeight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
                     </GridLayout>
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
 

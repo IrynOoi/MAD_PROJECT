@@ -40,7 +40,7 @@ std::string runModel(JNIEnv *env, jobject thiz, const std::string& prompt,
     }
 
     llama_context_params ctx_params = llama_context_default_params();
-    ctx_params.n_ctx = 512;
+    ctx_params.n_ctx = 2048;
     ctx_params.n_threads = 4; // Recommended: 4 or 6 threads
 
     llama_context* ctx = llama_init_from_model(model, ctx_params);
