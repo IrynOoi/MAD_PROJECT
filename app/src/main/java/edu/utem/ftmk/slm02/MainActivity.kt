@@ -1108,80 +1108,93 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildPrompt(ingredients: String): String {
 
-        return """
+        // System-level instruction:
+        // Defines the role, target allergens, derived ingredient mappings,
+        // and strict output rules for the model.
+        val systemInstruction = """
+        You are a strict Food Safety Officer. Your task is to identify allergens in the ingredient list.
+        
+        Target Allergens (look for these ONLY):
+        [milk, egg, peanut, tree nut, wheat, soy, fish, shellfish, sesame]
+        
+        Common Derived Ingredients Mapping (check for these too):
+        - milk: butter, cream, cheese, yogurt
+        - egg: egg white, egg yolk, albumin
+        - peanut: peanut butter
+        - tree nut: almond, walnut, cashew, pecan
+        - wheat: flour, semolina, bread crumbs
+        - soy: soy sauce, tofu, soy protein
+        - fish: salmon, tuna, cod, anchovy
+        - shellfish: shrimp, crab, lobster
+        - sesame: tahini, sesame oil
+        
+        Rules:
+        1. Identify allergens by direct mention or derived ingredients.
+        2. Output ONLY the detected allergens from the target list.
+        3. Format as a lowercase, comma-separated list.
+        4. If NO allergens are found from the list, output exactly: EMPTY
+        5. NEVER write explanations or extra text.
+    """.trimIndent()
 
-[INST]
+        // User content:
+        // Provides few-shot examples followed by the actual ingredients to analyze.
+        val userContent = """
+        Examples:
+        Ingredients: "wheat flour, milk, sugar"
+        Output: milk, wheat
+        
+        Ingredients: "rice, apple, carrot"
+        Output: EMPTY
+        
+        Ingredients to analyze:
+        $ingredients
+        
+        Answer:
+    """.trimIndent()
 
-You are a strict Food Safety Officer. Your task is to identify allergens in the ingredient list.
+        // Choose prompt format based on the selected model filename.
+        // Different models require different chat / instruction templates.
+        return when {
 
+            // 1. Phi-3 / Phi-3.5
+            // Format: <|system|>...<|end|><|user|>...<|end|><|assistant|>
+            selectedModelFilename.contains("Phi", ignoreCase = true) -> {
+                "<|system|>\n$systemInstruction<|end|>\n" +
+                        "<|user|>\n$userContent<|end|>\n" +
+                        "<|assistant|>\n"
+            }
 
+            // 2. Qwen 2.5
+            // Uses ChatML format: <|im_start|>role ... <|im_end|>
+            selectedModelFilename.contains("qwen", ignoreCase = true) -> {
+                "<|im_start|>system\n$systemInstruction<|im_end|>\n" +
+                        "<|im_start|>user\n$userContent<|im_end|>\n" +
+                        "<|im_start|>assistant\n"
+            }
 
-Target Allergens (look for these ONLY):
+            // 3. Llama 3 / 3.2
+            // Uses header-based role tokens and explicit end-of-turn markers.
+            selectedModelFilename.contains("Llama-3", ignoreCase = true) -> {
+                "<|begin_of_text|>" +
+                        "<|start_header_id|>system<|end_header_id|>\n\n$systemInstruction<|eot_id|>" +
+                        "<|start_header_id|>user<|end_header_id|>\n\n$userContent<|eot_id|>" +
+                        "<|start_header_id|>assistant<|end_header_id|>\n"
+            }
 
-[milk, egg, peanut, tree nut, wheat, soy, fish, shellfish, sesame]
+            // 4. Gemma / Vikhr-Gemma
+            // Gemma typically does not support a system role,
+            // so instructions are embedded directly in the user turn.
+            selectedModelFilename.contains("Gemma", ignoreCase = true) -> {
+                "<start_of_turn>user\n$systemInstruction\n\n$userContent<end_of_turn>\n" +
+                        "<start_of_turn>model\n"
+            }
 
-
-
-Common Derived Ingredients Mapping (check for these too):
-
-- milk: butter, cream, cheese, yogurt
-
-- egg: egg white, egg yolk, albumin
-
-- peanut: peanut butter
-
-- tree nut: almond, walnut, cashew, pecan
-
-- wheat: flour, semolina, bread crumbs
-
-- soy: soy sauce, tofu, soy protein
-
-- fish: salmon, tuna, cod, anchovy
-
-- shellfish: shrimp, crab, lobster
-
-- sesame: tahini, sesame oil
-
-
-
-Rules:
-
-1. Identify allergens by direct mention or derived ingredients.
-
-2. Output ONLY the detected allergens from the target list.
-
-3. Format as a lowercase, comma-separated list.
-
-4. If NO allergens are found from the list, output exactly: EMPTY
-
-5. NEVER write explanations or extra text.
-
-
-
-Examples:
-
-Ingredients: "wheat flour, milk, sugar"
-
-Output: milk, wheat
-
-
-
-Ingredients: "rice, apple, carrot"
-
-Output: EMPTY
-
-
-
-Ingredients to analyze:
-
-$ingredients
-
-[/INST]
-
-Answer:
-
-""".trimIndent()
-
+            // 5. Default fallback
+            // For Llama 2, Mistral, and other older models using [INST] format.
+            else -> {
+                "[INST]\n$systemInstruction\n\n$userContent\n[/INST]\n"
+            }
+        }
     }
 
 
