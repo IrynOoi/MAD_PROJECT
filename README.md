@@ -21,7 +21,8 @@
 
 ## Summary of food product (predict all)
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/89e97aa4-eb7b-41ad-bc2d-93f25ab98ede" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/0e181df9-9098-4bd7-ad0b-95d118dae69c" />
+
 
 
 
