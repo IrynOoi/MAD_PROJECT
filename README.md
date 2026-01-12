@@ -20,16 +20,20 @@
 
 ## Summary of food product (predict all)
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/1eee030a-a5e3-4e2d-9d4b-dc01f3f2daff" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/acdab497-f740-4825-b6e7-a0b293227294" />
+
 
 ## Food Analysis Detail
 PART 1:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/d0d7e3a0-8e69-495f-b1c8-d9b5f1702e72" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/03786047-d619-4946-bee1-eaff181195c2" />
+
+
 
 PART 2:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/e97868b6-7d2b-4be0-8162-5014d6e3814a" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/72c27aaa-1c58-4754-a57f-a0f344d65635" />
+
 
 
 
