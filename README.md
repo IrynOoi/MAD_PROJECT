@@ -36,23 +36,26 @@ PART 2:
 
 PART 1:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/409fde0a-5f99-4f24-b513-f1c566d42f5b" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/990da28d-1e07-4e47-a6c8-1c6b1f1ee3d3" />
 
 
 PART 2:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/8088fa05-9900-431c-93eb-927285af7191" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/3e76310d-3420-4646-abbb-9e351a9078b7" />
+
 
 
 # TABLE FOR AND SAFETY METRIC
 
 PART 1:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/06e99f0d-994d-41d1-bcc3-7e112575d9f6" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/d8d1109b-9a43-446d-ac03-7c865bedc968" />
+
 
 PART 2:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/2a24da09-8393-4cf7-ad8e-34dc6bfa4764" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/8ca0b584-7660-4bf8-86be-67cad9bbfc95" />
+
 
 
 
@@ -62,16 +65,19 @@ PART 2:
 
 PART 1:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/5b99cd17-18f7-41c0-b7a8-77b6118a7761" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/670ad093-95ec-46ae-86f5-60e2de59cafe" />
+
 
 
 PART 2:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/7b2e452e-7710-4019-955f-cd920d920d10" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/3ce2f978-e8d7-44a8-9557-81084e5fdf44" />
+
 
 PART 3:
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/06c49fb2-6560-40f7-9472-55235d4b4ca5" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/e525518f-709e-4b9b-9162-e3cca49a135b" />
+
 
 
 
