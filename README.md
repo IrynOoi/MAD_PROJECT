@@ -12,6 +12,11 @@
 
 <img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/d7ea4a11-2afb-43da-b039-e317748bf5a1" />
 
+## Summary of food product (predict one item)
+
+<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/1b1190d9-b945-4ff1-a6df-d109b0b765d8" />
+
+
 ## Summary of food product (predict all)
 
 <img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/1eee030a-a5e3-4e2d-9d4b-dc01f3f2daff" />
