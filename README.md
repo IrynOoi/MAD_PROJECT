@@ -14,7 +14,7 @@
 
 ## Summary of food product (predict one item)
 
-<img width="960" height="1280" alt="image" src="https://github.com/user-attachments/assets/1b1190d9-b945-4ff1-a6df-d109b0b765d8" />
+<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/1b1190d9-b945-4ff1-a6df-d109b0b765d8" />
 
 
 ## Summary of food product (predict all)
