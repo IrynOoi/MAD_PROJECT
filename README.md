@@ -15,12 +15,14 @@
 
 ## Summary of food product (predict one item)
 
-<img width="500" height="1000" alt="image" src="https://github.com/user-attachments/assets/1b1190d9-b945-4ff1-a6df-d109b0b765d8" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/f19e44d3-c604-4c1a-b377-86c8d462ca49" />
+
 
 
 ## Summary of food product (predict all)
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/acdab497-f740-4825-b6e7-a0b293227294" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/89e97aa4-eb7b-41ad-bc2d-93f25ab98ede" />
+
 
 
 ## Food Analysis Detail
