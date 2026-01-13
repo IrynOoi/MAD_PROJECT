@@ -29,13 +29,15 @@
 ## Food Analysis Detail
 PART 1:
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/03786047-d619-4946-bee1-eaff181195c2" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/fe505c42-8f1d-46eb-b7de-63e8a15225fa" />
+
 
 
 
 PART 2:
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/72c27aaa-1c58-4754-a57f-a0f344d65635" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/2e2d401a-08f5-40b7-9785-fe5b4eb6d852" />
+
 
 
 
