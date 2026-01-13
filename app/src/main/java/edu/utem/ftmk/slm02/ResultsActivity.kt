@@ -125,7 +125,7 @@ class ResultsActivity : AppCompatActivity() {
 
 // 3. Raw Allergens
 
-            val rawText = if (item.foodItem.allergens.isEmpty() || item.foodItem.allergens == "empty") "None" else item.foodItem.allergens
+            val rawText = if (item.foodItem.allergens.isEmpty() || item.foodItem.allergens == "empty") "EMPTY" else item.foodItem.allergens
 
             holder.tvRawAllergens.text = rawText
 
@@ -133,7 +133,7 @@ class ResultsActivity : AppCompatActivity() {
 
 // 4. Mapped (Expected)
 
-            val mappedText = if (item.foodItem.allergensMapped.isEmpty()) "None" else item.foodItem.allergensMapped
+            val mappedText = if (item.foodItem.allergensMapped.isEmpty()) "EMPTY" else item.foodItem.allergensMapped
 
             holder.tvExpected.text = mappedText
 

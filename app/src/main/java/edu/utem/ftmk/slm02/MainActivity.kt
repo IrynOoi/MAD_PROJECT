@@ -1108,92 +1108,63 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildPrompt(ingredients: String): String {
 
-        // System-level instruction:
-        // Defines the role, target allergens, derived ingredient mappings,
-        // and strict output rules for the model.
-        val systemInstruction = """
-        You are a strict Food Safety Officer. Your task is to identify allergens in the ingredient list.
+        // 1. CONTENT SECTION:
+        // Add a "Reference Guide" that maps derived ingredients to allergens.
+        // This significantly improves accuracy while still being Zero-Shot
+        // (definitions and rules, not examples).
+        val sysMsg = """
+        You are a strict Food Safety Officer. 
+        Analyze the ingredients list and extract ONLY allergens from this specific list: 
+        [milk, egg, peanut, tree nut, wheat, soy, fish, shellfish, sesame].
         
-        Target Allergens (look for these ONLY):
-        [milk, egg, peanut, tree nut, wheat, soy, fish, shellfish, sesame]
-        
-        Common Derived Ingredients Mapping (check for these too):
-        - milk: butter, cream, cheese, yogurt
-        - egg: egg white, egg yolk, albumin
-        - peanut: peanut butter
-        - tree nut: almond, walnut, cashew, pecan
-        - wheat: flour, semolina, bread crumbs
-        - soy: soy sauce, tofu, soy protein
-        - fish: salmon, tuna, cod, anchovy
-        - shellfish: shrimp, crab, lobster
-        - sesame: tahini, sesame oil
+        Reference Guide (Derived Ingredients Mapping):
+        - milk: butter, cheese, cream, yogurt, whey, casein, lactose, ghee
+        - egg: egg white, egg yolk, albumin, mayonnaise, meringue
+        - peanut: peanut butter, arachis oil, goober
+        - tree nut: almond, walnut, cashew, pecan, pistachio, macadamia, hazelnut
+        - wheat: flour, semolina, bread crumbs, gluten, spelt, couscous, durum
+        - soy: soy sauce, tofu, soy protein, edamame, lecithin, miso, tempeh
+        - fish: salmon, tuna, cod, anchovy, bass, tilapia
+        - shellfish: shrimp, crab, lobster, prawn, clam, oyster, scallop
+        - sesame: tahini, sesame oil, benne seeds, za'atar
         
         Rules:
-        1. Identify allergens by direct mention or derived ingredients.
-        2. Output ONLY the detected allergens from the target list.
-        3. Format as a lowercase, comma-separated list.
-        4. If NO allergens are found from the list, output exactly: EMPTY
-        5. NEVER write explanations or extra text.
+        1. Identify allergens by direct mention OR by matching any item from the Reference Guide.
+        2. Output ONLY detected allergens from the target list (e.g., "milk, wheat").
+        3. Format the output as a lowercase, comma-separated list.
+        4. If no allergens are found, output exactly: EMPTY
+        5. NEVER include explanations, preambles, or extra text.
     """.trimIndent()
 
-        // User content:
-        // Provides few-shot examples followed by the actual ingredients to analyze.
-        val userContent = """
-        Examples:
-        Ingredients: "wheat flour, milk, sugar"
-        Output: milk, wheat
-        
-        Ingredients: "rice, apple, carrot"
-        Output: EMPTY
-        
-        Ingredients to analyze:
-        $ingredients
-        
-        Answer:
-    """.trimIndent()
+        val userMsg = "Ingredients to analyze:\n$ingredients"
 
-        // Choose prompt format based on the selected model filename.
-        // Different models require different chat / instruction templates.
+        // 2. FORMAT SECTION:
+        // Ensure the prompt is structured correctly for each model family,
+        // so the model properly follows system and user instructions.
         return when {
+            // Qwen 2.5 (ChatML format)
+            selectedModelFilename.contains("qwen", true) ->
+                "<|im_start|>system\n$sysMsg<|im_end|>\n<|im_start|>user\n$userMsg<|im_end|>\n<|im_start|>assistant\n"
 
-            // 1. Phi-3 / Phi-3.5
-            // Format: <|system|>...<|end|><|user|>...<|end|><|assistant|>
-            selectedModelFilename.contains("Phi", ignoreCase = true) -> {
-                "<|system|>\n$systemInstruction<|end|>\n" +
-                        "<|user|>\n$userContent<|end|>\n" +
-                        "<|assistant|>\n"
-            }
+            // Phi-3 (Phi format)
+            // System instructions are merged into the user message
+            // to improve instruction adherence.
+            selectedModelFilename.contains("Phi", true) ->
+                "<|user|>\n$sysMsg\n\n$userMsg<|end|>\n<|assistant|>\n"
 
-            // 2. Qwen 2.5
-            // Uses ChatML format: <|im_start|>role ... <|im_end|>
-            selectedModelFilename.contains("qwen", ignoreCase = true) -> {
-                "<|im_start|>system\n$systemInstruction<|im_end|>\n" +
-                        "<|im_start|>user\n$userContent<|im_end|>\n" +
-                        "<|im_start|>assistant\n"
-            }
-
-            // 3. Llama 3 / 3.2
-            // Uses header-based role tokens and explicit end-of-turn markers.
-            selectedModelFilename.contains("Llama-3", ignoreCase = true) -> {
-                "<|begin_of_text|>" +
-                        "<|start_header_id|>system<|end_header_id|>\n\n$systemInstruction<|eot_id|>" +
-                        "<|start_header_id|>user<|end_header_id|>\n\n$userContent<|eot_id|>" +
+            // Llama 3 (Llama 3 chat format)
+            selectedModelFilename.contains("Llama-3", true) ->
+                "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n$sysMsg<|eot_id|>" +
+                        "<|start_header_id|>user<|end_header_id|>\n\n$userMsg<|eot_id|>" +
                         "<|start_header_id|>assistant<|end_header_id|>\n"
-            }
 
-            // 4. Gemma / Vikhr-Gemma
-            // Gemma typically does not support a system role,
-            // so instructions are embedded directly in the user turn.
-            selectedModelFilename.contains("Gemma", ignoreCase = true) -> {
-                "<start_of_turn>user\n$systemInstruction\n\n$userContent<end_of_turn>\n" +
-                        "<start_of_turn>model\n"
-            }
+            // Gemma (Gemma chat format)
+            selectedModelFilename.contains("Gemma", true) ->
+                "<start_of_turn>user\n$sysMsg\n\n$userMsg<end_of_turn>\n<start_of_turn>model\n"
 
-            // 5. Default fallback
-            // For Llama 2, Mistral, and other older models using [INST] format.
-            else -> {
-                "[INST]\n$systemInstruction\n\n$userContent\n[/INST]\n"
-            }
+            // Default / fallback format (e.g., LLaMA-style [INST])
+            else ->
+                "[INST] $sysMsg \n\n $userMsg [/INST]\n"
         }
     }
 

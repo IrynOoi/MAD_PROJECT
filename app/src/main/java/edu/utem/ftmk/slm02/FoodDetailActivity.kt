@@ -1,4 +1,5 @@
 // FoodDetailActivity.kt
+// FoodDetailActivity.kt
 package edu.utem.ftmk.slm02
 
 import android.os.Bundle
@@ -23,7 +24,7 @@ class FoodDetailActivity : AppCompatActivity() {
 
         if (result != null) {
             populateOriginalFields(result)
-            populateTable2Quality(result)
+            populateTable2Quality(result) // <--- Modified Function
             populateTable3Safety(result)
             populateTable4Efficiency(result)
         }
@@ -47,13 +48,10 @@ class FoodDetailActivity : AppCompatActivity() {
         // Changed "None" to "EMPTY" for Mapped Allergens
         val mappedAllergens = if (food.allergensMapped.isNullOrEmpty() || food.allergensMapped.equals("empty", ignoreCase = true))
             "EMPTY" else food.allergensMapped
-        // 3. Predicted (Updated with Model Name)
 
+        // 3. Predicted (Updated with Model Name)
         findViewById<TextView>(R.id.tvDetailModelName).text = result.modelName
         findViewById<TextView>(R.id.tvDetailMappedAllergens).text = mappedAllergens
-
-        // 3. Predicted (Updated with Model Name)
-        findViewById<TextView>(R.id.tvDetailModelName).text = result.modelName // <--- ADDED
         findViewById<TextView>(R.id.tvDetailPredicted).text = result.predictedAllergens ?: "No Prediction"
 
         // 4. Timestamp
@@ -61,28 +59,36 @@ class FoodDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvDetailTimestamp).text = sdf.format(Date(result.timestamp))
     }
 
+    // --- MODIFIED FUNCTION BELOW ---
     private fun populateTable2Quality(result: PredictionResult) {
         val metrics = MetricsCalculator.calculate(
             result.foodItem.allergensMapped,
             result.predictedAllergens ?: ""
         )
 
+        // Precision, Recall, F1 remain as Decimals (as per PDF standard for these specific metrics)
         findViewById<TextView>(R.id.tvValPrecision).text = "%.2f".format(metrics.precision)
         findViewById<TextView>(R.id.tvValRecall).text = "%.2f".format(metrics.recall)
         findViewById<TextView>(R.id.tvValF1).text = "%.2f".format(metrics.f1Score)
 
+        // 1. Exact Match: Display as Percentage equivalent for single item
         val tvExact = findViewById<TextView>(R.id.tvValExactMatch)
         if (metrics.exactMatch) {
-            tvExact.text = "YES"
+            tvExact.text = "YES (100%)"
             tvExact.setTextColor(Color.parseColor("#2E7D32")) // Green
         } else {
-            tvExact.text = "NO"
+            tvExact.text = "NO (0%)"
             tvExact.setTextColor(Color.parseColor("#C62828")) // Red
         }
 
+        // Hamming Loss remains Decimal
         findViewById<TextView>(R.id.tvValHamming).text = "%.3f".format(metrics.hammingLoss)
-        findViewById<TextView>(R.id.tvValFNR).text = "%.2f".format(metrics.falseNegativeRate)
+
+        // 2. FNR: Convert Ratio (0.0 - 1.0) to Percentage (0.0% - 100.0%)
+        val fnrPercentage = metrics.falseNegativeRate * 100
+        findViewById<TextView>(R.id.tvValFNR).text = "%.1f%%".format(fnrPercentage)
     }
+    // -------------------------------
 
     private fun populateTable3Safety(result: PredictionResult) {
         val metrics = MetricsCalculator.calculate(
@@ -130,7 +136,6 @@ class FoodDetailActivity : AppCompatActivity() {
         val inf = result.metrics
 
         if (inf != null) {
-            // Note: These IDs match the XML. Ensure your XML is updated as per above.
             val latencySec = inf.latencyMs / 1000.0
             val ttftSec = inf.ttft / 1000.0
             val oetSec = inf.oet / 1000.0

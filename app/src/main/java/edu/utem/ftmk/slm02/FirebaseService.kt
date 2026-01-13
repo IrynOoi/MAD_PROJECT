@@ -1,5 +1,5 @@
 // FirebaseService.kt
-// FirebaseService.kt
+
 package edu.utem.ftmk.slm02
 
 import android.util.Log
