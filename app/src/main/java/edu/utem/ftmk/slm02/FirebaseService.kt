@@ -1,11 +1,11 @@
 // FirebaseService.kt
-
 package edu.utem.ftmk.slm02
 
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.delay
@@ -292,6 +292,58 @@ class FirebaseService {
             Log.d("FIREBASE", "Benchmark tables saved.")
         } catch (e: Exception) {
             Log.e("FIREBASE", "Error saving benchmarks: ${e.message}")
+        }
+    }
+
+    // =========================================================================
+    // PART 4: History Retrieval
+    // =========================================================================
+
+
+    suspend fun getPredictionHistory(): List<PredictionResult> {
+        return try {
+            // Fetch last 100 predictions, ordered by newest first
+            val snapshot = collectionPrediction
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(100)
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    // Reconstruct FoodItem
+                    val foodItem = FoodItem(
+                        id = doc.get("dataId")?.toString() ?: "0",
+                        name = doc.getString("name") ?: "Unknown",
+                        ingredients = doc.getString("ingredients") ?: "",
+                        link = doc.getString("link") ?: "",
+                        allergens = doc.getString("rawAllergens") ?: "",
+                        allergensMapped = doc.getString("mappedAllergens") ?: ""
+                    )
+
+                    // Reconstruct Metrics (Partial)
+                    val effMap = doc.get("efficiency_metrics") as? Map<String, Any>
+                    val metrics = if (effMap != null) {
+                        InferenceMetrics(
+                            latencyMs = ((effMap["Latency (s)"] as? Number)?.toDouble() ?: 0.0 * 1000).toLong(),
+                            javaHeapKb = 0, nativeHeapKb = 0, totalPssKb = 0, ttft = 0, itps = 0, otps = 0, oet = 0
+                        )
+                    } else null
+
+                    PredictionResult(
+                        foodItem = foodItem,
+                        predictedAllergens = doc.getString("predictedAllergens") ?: "",
+                        modelName = doc.getString("modelName") ?: "Unknown",
+                        metrics = metrics,
+                        firestoreId = doc.id
+                    )
+                } catch (e: Exception) {
+                    null // Skip malformed documents
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("FIREBASE", "Error fetching history", e)
+            emptyList()
         }
     }
 

@@ -1,18 +1,22 @@
 // DashboardActivity.kt
 package edu.utem.ftmk.slm02
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import java.io.File
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -21,24 +25,92 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var tableEfficiency: TableLayout
     private val firebaseService = FirebaseService()
 
+    // 1. Variable to store data for export
+    private var currentBenchmarkData: List<Map<String, Any>> = emptyList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
+        // Setup Back Button
         val btnBack = findViewById<ImageButton>(R.id.btnBackDashboard)
         btnBack.setOnClickListener { finish() }
 
+        // 2. Setup Export Button
+        // Ensure you have an ImageButton or Button with id 'btnExportDashboard' in your XML
+        val btnExport = findViewById<View>(R.id.btnExportDashboard)
+        btnExport.setOnClickListener {
+            exportToCsv()
+        }
+
+        // Initialize Tables
         tableQuality = findViewById(R.id.tableQuality)
         tableSafety = findViewById(R.id.tableSafety)
         tableEfficiency = findViewById(R.id.tableEfficiency)
 
+        // Load Data
         fetchAndDisplayBenchmarks()
+    }
+
+    private fun exportToCsv() {
+        if (currentBenchmarkData.isEmpty()) {
+            Toast.makeText(this, "No data to export", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val sb = StringBuilder()
+        // CSV Header
+        sb.append("Model,Precision,Recall,F1 Score,Exact Match(%),Hamming Loss,FNR(%),Hallucination(%),Over-Prediction(%),Abstention Acc(%),Latency(s),Total Time(s),Java Heap(MB)\n")
+
+        for (row in currentBenchmarkData) {
+            val model = (row["modelName"] as? String ?: "?").replace(".gguf", "")
+
+            // Quality
+            val prec = (row["Precision"] as? Number)?.toDouble() ?: 0.0
+            val rec = (row["Recall"] as? Number)?.toDouble() ?: 0.0
+            val f1 = (row["F1 Score"] as? Number)?.toDouble() ?: 0.0
+            val emr = (row["Exact Match Ratio (%)"] as? Number)?.toDouble() ?: 0.0
+            val ham = (row["Hamming Loss"] as? Number)?.toDouble() ?: 0.0
+            val fnr = (row["False Negative Rate (%)"] as? Number)?.toDouble() ?: 0.0
+
+            // Safety
+            val hall = (row["Hallucination Rate (%)"] as? Number)?.toDouble() ?: 0.0
+            val over = (row["Over-Prediction Rate (%)"] as? Number)?.toDouble() ?: 0.0
+            val abst = (row["Abstention Accuracy (%)"] as? Number)?.toDouble() ?: 0.0
+
+            // Efficiency
+            val lat = (row["Latency (s)"] as? Number)?.toDouble() ?: 0.0
+            val total = (row["Total Time (s)"] as? Number)?.toDouble() ?: 0.0
+            val java = (row["Java Heap (MB)"] as? Number)?.toDouble() ?: 0.0
+
+            sb.append("$model,$prec,$rec,$f1,$emr,$ham,$fnr,$hall,$over,$abst,$lat,$total,$java\n")
+        }
+
+        try {
+            // Save to internal storage (cache directory)
+            val fileName = "benchmark_export.csv"
+            val file = File(cacheDir, fileName)
+            file.writeText(sb.toString())
+
+            // Share using FileProvider
+            val uri = FileProvider.getUriForFile(this, "${packageName}.provider", file)
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/csv"
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(Intent.createChooser(intent, "Export Dashboard Data"))
+
+        } catch (e: Exception) {
+            Toast.makeText(this, "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
     }
 
     private fun fetchAndDisplayBenchmarks() {
         lifecycleScope.launch {
             try {
                 val data = firebaseService.getAllBenchmarks()
+                currentBenchmarkData = data // <--- Store data for export
                 if (data.isNotEmpty()) {
                     populateQualityTable(data)
                     populateSafetyTable(data)
@@ -100,7 +172,6 @@ class DashboardActivity : AppCompatActivity() {
         for (row in data) {
             val model = (row["modelName"] as? String ?: "?").replace(".gguf", "")
 
-            // Reading NEW keys with Units from Firebase
             val lat = (row["Latency (s)"] as? Number)?.toDouble() ?: 0.0
             val total = (row["Total Time (s)"] as? Number)?.toDouble() ?: 0.0
             val ttft = (row["Time-to-First-Token (s)"] as? Number)?.toDouble() ?: 0.0
