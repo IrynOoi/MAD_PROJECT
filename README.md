@@ -21,7 +21,27 @@
 
 ## Summary of food product (predict all)
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/0e181df9-9098-4bd7-ad0b-95d118dae69c" />
+PART 1:
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/aa9e6212-cacb-4242-ac32-a66694a15067" />
+
+
+PART 2:
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/2eab8740-e1de-4430-8982-1d7739acc0bd" />
+
+
+PART 3:
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/2a887316-1b64-4327-a060-b635f1a85c31" />
+
+
+PART 4:
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/b76ee72a-e243-4ea3-ae16-acf6a6274ed4" />
+
+
+
 
 
 
@@ -29,14 +49,16 @@
 ## Food Analysis Detail
 PART 1:
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/fe505c42-8f1d-46eb-b7de-63e8a15225fa" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/0103d38b-63e5-428c-8c6c-f5ccfd9aa585" />
+
 
 
 
 
 PART 2:
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/2e2d401a-08f5-40b7-9785-fe5b4eb6d852" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/6d60e85c-b619-4459-8aac-956672048df9" />
+
 
 
 
