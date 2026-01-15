@@ -37,10 +37,9 @@ class DashboardActivity : AppCompatActivity() {
         btnBack.setOnClickListener { finish() }
 
         // 2. Setup Export Button
-        // Ensure you have an ImageButton or Button with id 'btnExportDashboard' in your XML
         val btnExport = findViewById<View>(R.id.btnExportDashboard)
         btnExport.setOnClickListener {
-            exportToExcel()
+            exportToCsv()
         }
 
         // Initialize Tables
@@ -52,7 +51,7 @@ class DashboardActivity : AppCompatActivity() {
         fetchAndDisplayBenchmarks()
     }
 
-    private fun exportToExcel() {
+    private fun exportToCsv() {
         if (currentBenchmarkData.isEmpty()) {
             Toast.makeText(this, "No data to export", Toast.LENGTH_SHORT).show()
             return
@@ -60,25 +59,22 @@ class DashboardActivity : AppCompatActivity() {
 
         val sb = StringBuilder()
 
-        // 1. Start HTML Document
-        sb.append("<html><body>")
-
-        // Title
-        sb.append("<h1>Model Performance Dashboard Report</h1>")
-        sb.append("<p>Generated on: ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())}</p>")
-        sb.append("<hr>")
+        // ==========================================
+        // 1. REPORT HEADER
+        // ==========================================
+        // We use commas (,) to separate columns and \n for new lines
+        sb.append("MODEL PERFORMANCE DASHBOARD REPORT\n")
+        sb.append("Generated on:,${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())}\n")
+        sb.append("\n") // Empty row for spacing
 
         // ==========================================
-        // TABLE 1: PREDICTION QUALITY
+        // 2. SECTION: PREDICTION QUALITY
         // ==========================================
-        sb.append("<h3>1. PREDICTION QUALITY METRICS</h3>")
-        sb.append("<table border='1' cellspacing='0' cellpadding='5'>")
-        // Header
-        sb.append("<tr style='background-color:#E0E0E0; font-weight:bold;'>")
-        sb.append("<th>Model</th><th>Precision</th><th>Recall</th><th>F1 Score</th><th>Exact Match (%)</th><th>Hamming Loss</th><th>FNR (%)</th>")
-        sb.append("</tr>")
+        sb.append("1. PREDICTION QUALITY METRICS\n")
+        // Table Headers
+        sb.append("Model,Precision,Recall,F1 Score,Exact Match (%),Hamming Loss,FNR (%)\n")
 
-        // Data
+        // Data Rows
         for (row in currentBenchmarkData) {
             val model = (row["modelName"] as? String ?: "?").replace(".gguf", "")
             val prec = (row["Precision"] as? Number)?.toDouble() ?: 0.0
@@ -88,26 +84,21 @@ class DashboardActivity : AppCompatActivity() {
             val ham = (row["Hamming Loss"] as? Number)?.toDouble() ?: 0.0
             val fnr = (row["False Negative Rate (%)"] as? Number)?.toDouble() ?: 0.0
 
-            sb.append("<tr>")
-            sb.append("<td>$model</td>")
-            sb.append("<td>${"%.4f".format(prec)}</td>")
-            sb.append("<td>${"%.4f".format(rec)}</td>")
-            sb.append("<td>${"%.4f".format(f1)}</td>")
-            sb.append("<td>${"%.1f".format(emr)}%</td>")
-            sb.append("<td>${"%.4f".format(ham)}</td>")
-            sb.append("<td>${"%.1f".format(fnr)}%</td>")
-            sb.append("</tr>")
+            sb.append("$model,")
+            sb.append("${"%.4f".format(prec)},")
+            sb.append("${"%.4f".format(rec)},")
+            sb.append("${"%.4f".format(f1)},")
+            sb.append("${"%.1f".format(emr)}%,")
+            sb.append("${"%.4f".format(ham)},")
+            sb.append("${"%.1f".format(fnr)}%\n")
         }
-        sb.append("</table><br><br>")
+        sb.append("\n") // Empty row for spacing
 
         // ==========================================
-        // TABLE 2: SAFETY METRICS
+        // 3. SECTION: SAFETY METRICS
         // ==========================================
-        sb.append("<h3>2. SAFETY METRICS</h3>")
-        sb.append("<table border='1' cellspacing='0' cellpadding='5'>")
-        sb.append("<tr style='background-color:#E0E0E0; font-weight:bold;'>")
-        sb.append("<th>Model</th><th>Hallucination Rate (%)</th><th>Over-Prediction Rate (%)</th><th>Abstention Accuracy (%)</th>")
-        sb.append("</tr>")
+        sb.append("2. SAFETY METRICS\n")
+        sb.append("Model,Hallucination Rate (%),Over-Prediction Rate (%),Abstention Accuracy (%)\n")
 
         for (row in currentBenchmarkData) {
             val model = (row["modelName"] as? String ?: "?").replace(".gguf", "")
@@ -115,23 +106,18 @@ class DashboardActivity : AppCompatActivity() {
             val over = (row["Over-Prediction Rate (%)"] as? Number)?.toDouble() ?: 0.0
             val abst = (row["Abstention Accuracy (%)"] as? Number)?.toDouble() ?: 0.0
 
-            sb.append("<tr>")
-            sb.append("<td>$model</td>")
-            sb.append("<td>${"%.1f".format(hall)}%</td>")
-            sb.append("<td>${"%.1f".format(over)}%</td>")
-            sb.append("<td>${"%.1f".format(abst)}%</td>")
-            sb.append("</tr>")
+            sb.append("$model,")
+            sb.append("${"%.1f".format(hall)}%,")
+            sb.append("${"%.1f".format(over)}%,")
+            sb.append("${"%.1f".format(abst)}%\n")
         }
-        sb.append("</table><br><br>")
+        sb.append("\n")
 
         // ==========================================
-        // TABLE 3: EFFICIENCY METRICS
+        // 4. SECTION: EFFICIENCY METRICS
         // ==========================================
-        sb.append("<h3>3. ON-DEVICE EFFICIENCY METRICS</h3>")
-        sb.append("<table border='1' cellspacing='0' cellpadding='5'>")
-        sb.append("<tr style='background-color:#E0E0E0; font-weight:bold;'>")
-        sb.append("<th>Model</th><th>Latency (s)</th><th>Total Time (s)</th><th>TTFT (s)</th><th>Input T/s</th><th>Output T/s</th><th>Eval Time (s)</th><th>Java Heap (MB)</th><th>Native Heap (MB)</th><th>PSS (MB)</th>")
-        sb.append("</tr>")
+        sb.append("3. ON-DEVICE EFFICIENCY METRICS\n")
+        sb.append("Model,Latency (s),Total Time (s),TTFT (s),Input T/s,Output T/s,Eval Time (s),Java Heap (MB),Native Heap (MB),PSS (MB)\n")
 
         for (row in currentBenchmarkData) {
             val model = (row["modelName"] as? String ?: "?").replace(".gguf", "")
@@ -145,36 +131,31 @@ class DashboardActivity : AppCompatActivity() {
             val nat = (row["Native Heap (MB)"] as? Number)?.toDouble() ?: 0.0
             val pss = (row["Proportional Set Size (MB)"] as? Number)?.toDouble() ?: 0.0
 
-            sb.append("<tr>")
-            sb.append("<td>$model</td>")
-            sb.append("<td>${"%.2f".format(lat)}</td>")
-            sb.append("<td>${"%.2f".format(total)}</td>")
-            sb.append("<td>${"%.2f".format(ttft)}</td>")
-            sb.append("<td>${"%.1f".format(itps)}</td>")
-            sb.append("<td>${"%.1f".format(otps)}</td>")
-            sb.append("<td>${"%.2f".format(oet)}</td>")
-            sb.append("<td>${"%.1f".format(java)}</td>")
-            sb.append("<td>${"%.1f".format(nat)}</td>")
-            sb.append("<td>${"%.1f".format(pss)}</td>")
-            sb.append("</tr>")
+            sb.append("$model,")
+            sb.append("${"%.2f".format(lat)},")
+            sb.append("${"%.2f".format(total)},")
+            sb.append("${"%.2f".format(ttft)},")
+            sb.append("${"%.1f".format(itps)},")
+            sb.append("${"%.1f".format(otps)},")
+            sb.append("${"%.2f".format(oet)},")
+            sb.append("${"%.1f".format(java)},")
+            sb.append("${"%.1f".format(nat)},")
+            sb.append("${"%.1f".format(pss)}\n")
         }
-        sb.append("</table>")
-        sb.append("</body></html>")
 
         // ==========================================
-        // SAVE AND SHARE
+        // 5. SAVE AND SHARE
         // ==========================================
         try {
-            // Save as .xls (Excel) so it opens with formatting
-            val fileName = "benchmark_report.xls"
+            val fileName = "benchmark_report.csv" // Using .csv extension
             val file = File(cacheDir, fileName)
             file.writeText(sb.toString())
 
             val uri = FileProvider.getUriForFile(this, "${packageName}.provider", file)
             val intent = Intent(Intent.ACTION_SEND)
 
-            // Use MIME type for Excel/HTML
-            intent.type = "application/vnd.ms-excel"
+            // MIME type for CSV
+            intent.type = "text/csv"
             intent.putExtra(Intent.EXTRA_STREAM, uri)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
@@ -185,7 +166,6 @@ class DashboardActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
     private fun fetchAndDisplayBenchmarks() {
         lifecycleScope.launch {
             try {
