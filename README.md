@@ -10,7 +10,8 @@
 
 ## UI PREDICTOR LOOK LIKE:
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/027d6dd1-c648-46b5-908f-85e58817b40f" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/c79dbec1-2d3e-42c2-84ad-f9254aa94b70" />
+
 
 
 ## Summary of food product (predict one item)
@@ -19,7 +20,7 @@
 
 
 
-## Summary of food product (predict all)
+## Summary of food product (predict all OR  predict 200 items)
 
 PART 1:
 
@@ -73,12 +74,18 @@ PART 2:
 
 PART 1:
 
-<img width="567" height="815" alt="image" src="https://github.com/user-attachments/assets/3f4c623b-6220-4823-aaab-9b7aca0588e3" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/13d096b5-da9c-4c33-b62e-f6a4d059a086" />
+
 
 
 PART 2:
 
-<img width="572" height="812" alt="image" src="https://github.com/user-attachments/assets/a70ba5fc-a7c9-40bc-8ca3-37ae5e79476f" />
+
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/bf72bced-48d5-4d1b-a5f6-d61a2ebb2f5e" />
+
+
+
 
 
 
@@ -88,14 +95,21 @@ PART 2:
 
 PART 1:
 
-<img width="572" height="812" alt="image" src="https://github.com/user-attachments/assets/42b3ecf1-59a0-49c8-a833-129efbef7409" />
+
+
+<img width="459" height="630" alt="image" src="https://github.com/user-attachments/assets/860867a9-3a10-4a49-a3d5-db6afc16e2e6" />
+
+
+
 
 
 
 
 PART 2:
 
-<img width="572" height="815" alt="image" src="https://github.com/user-attachments/assets/8909f70a-9186-4722-9ea7-0a2dd7765041" />
+<img width="450" height="611" alt="image" src="https://github.com/user-attachments/assets/88236efe-0170-43c7-9201-181019522c70" />
+
+
 
 
 
@@ -108,30 +122,107 @@ PART 2:
 
 PART 1:
 
-<img width="523" height="710" alt="image" src="https://github.com/user-attachments/assets/90f3e068-4252-4850-bfa9-efb099f3b357" />
+
+
+<img width="425" height="601" alt="image" src="https://github.com/user-attachments/assets/400e647d-3a26-49dd-9d49-df25ba9b81e4" />
+
 
 
 
 
 PART 2:
 
-<img width="572" height="680" alt="image" src="https://github.com/user-attachments/assets/7879d2ff-3589-4d99-9f4a-4a6af0e2f12f" />
+<img width="416" height="583" alt="image" src="https://github.com/user-attachments/assets/52529a94-8221-4daf-9e73-bf60690ed5b2" />
+
+
+
 
 
 
 PART 3:
 
-<img width="567" height="697" alt="image" src="https://github.com/user-attachments/assets/fe450835-f343-4957-8a24-b653476e454d" />
+
+<img width="445" height="576" alt="image" src="https://github.com/user-attachments/assets/960f45a8-9a9e-4b85-bbe3-2a93c0b5ecd4" />
 
 
-PART 4 :
-
-<img width="572" height="728" alt="image" src="https://github.com/user-attachments/assets/598fb852-8c41-4aee-89d0-6a1e4bbfcd69" />
 
 
-## EXPORT IN EXCEL IN HTML CSS WAY
 
-<img width="1017" height="608" alt="image" src="https://github.com/user-attachments/assets/18eb5dcb-ba05-4627-9ffb-2b98353e0912" />
+
+## AFTER CLICK THE TOP RIGHT BUTTON AT PERFORMANCE PAGE 
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/6f296592-5605-47e3-954e-3c74d3873ef5" />
+
+
+
+
+## EXPORT IN CSV
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/faafa166-2ea3-43f4-a957-f774ba45b55f" />
+
+
+## PREDICT HISTORY INTERFACE
+
+# ALL MODELS
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/ac958bca-a158-4395-acdb-902d859c12cf" />
+
+# CAN CLICK CERTAIN MODEL FROM DROP DOWN MENU  TO DISPLAY RELATED PREDICTED HISTORY:
+# qwen2.5-1.5b-instruct-q4_k_m.gguf
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/ec7cf986-39af-43d6-94d5-b130b4b7da2b" />
+
+# qwen2.5-3b-instruct-q4_k_m.gguf 
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/cae2bae2-fd9c-4f33-8f0d-5971aed83795" />
+
+
+# Llama-3.2-3B-Instruct-Q4_K_M.gguf
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/fa730c5e-7f03-4ae1-8b11-cb51cee025c3" />
+
+# Llama-3.2-1B-Instruct-Q4_K_M.gguf
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/c4dc2db5-e878-48d2-a838-c59046e85efa" />
+
+# Phi-3.5-mini-instruct-Q4_K_M.gguf
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/4e3c49f4-7feb-4e92-85e1-ff31cfb97ccb" />
+
+# Phi-3-mini-4k-instruct-q4.gguf
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/ecd19a92-37f5-42ad-9bef-d33dbfb4fcf9" />
+
+# Vikhr-Gemma-2B-instruct-Q4_K_M.gguf
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/9115e233-2d52-486b-8603-717cc5e5b20e" />
+
+
+
+
+
+
+
+## FOOD ANALYSIS DETAILS HISTORY
+
+PART 1:
+
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/b5b761ef-0794-4111-ad1c-67f914fceb49" />
+
+
+PART 2:
+
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/9e5d5a40-f10f-4ba5-a7e2-3a82aa66f79c" />
+
+
+
+
+
+
+
+
+
+
 
 
 
