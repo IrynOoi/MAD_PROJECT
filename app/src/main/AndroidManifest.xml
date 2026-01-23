@@ -29,6 +29,10 @@
         <activity android:name=".FoodDetailActivity" />
         <activity android:name=".DashboardActivity" />
 
+        <activity android:name=".HistoryActivity" />
+
+
+        <activity android:name=".HistoryDetailActivity" />
 
         <provider
                 android:name="androidx.core.content.FileProvider"

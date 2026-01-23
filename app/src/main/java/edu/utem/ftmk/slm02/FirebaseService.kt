@@ -299,13 +299,12 @@ class FirebaseService {
     // PART 4: History Retrieval
     // =========================================================================
 
-
     suspend fun getPredictionHistory(): List<PredictionResult> {
         return try {
-            // Fetch last 100 predictions, ordered by newest first
+            // Fetch ALL predictions, ordered by newest first
+            // REMOVED .limit(100) so it retrieves everything
             val snapshot = collectionPrediction
                 .orderBy("timestamp", Query.Direction.DESCENDING)
-                .limit(100)
                 .get()
                 .await()
 
@@ -338,6 +337,8 @@ class FirebaseService {
                         firestoreId = doc.id
                     )
                 } catch (e: Exception) {
+                    // ADDED: Log the error so you know if a specific item is broken
+                    Log.e("FIREBASE_HISTORY", "Error parsing item ${doc.id}", e)
                     null // Skip malformed documents
                 }
             }

@@ -69,7 +69,11 @@ class MainActivity : AppCompatActivity() {
 
 // Services
 
+    private lateinit var btnViewHistory: Button
+
     private lateinit var csvReader: CsvReader
+
+    private lateinit var btnPredictTotal: Button
 
     private lateinit var datasetManager: DatasetManager
 
@@ -197,6 +201,8 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MODEL", "Looking for: $modelName")
 
                 Log.d("MODEL", "Files found in Assets: ${assets?.joinToString()}")
+
+                // HERE IS THE INDIVIDUAL CALCULATION:
 
 
 
@@ -409,401 +415,174 @@ class MainActivity : AppCompatActivity() {
 
 
 
-// --- Core Logic: Batch Prediction (No Changes Needed Here) ---
-
-    private fun startBatchPrediction(dataset: Dataset) {
-
+    // --- REFACTORED: Unified Batch Prediction Logic ---
+// Replace your old startBatchPrediction with this function
+    private fun performBatchPrediction(items: List<FoodItem>, batchName: String) {
         lifecycleScope.launch(Dispatchers.IO) {
-
             withContext(Dispatchers.Main) {
-
+                // Disable ALL prediction buttons to prevent crashes
                 btnPredictAll.isEnabled = false
+                btnPredictItem.isEnabled = false
+                if (::btnPredictTotal.isInitialized) btnPredictTotal.isEnabled = false // Check if initialized
 
                 progressBar.visibility = View.VISIBLE
-
                 progressBar.progress = 0
-
                 tvProgress.visibility = View.VISIBLE
-
-                tvProgress.text = "Initializing Batch Prediction..."
-
+                tvProgress.text = "Initializing $batchName..."
                 predictionResults.clear()
-
             }
-
-
 
             val modelPath = copyModelToInternalStorage(this@MainActivity, selectedModelFilename)
-
             if (modelPath.isEmpty()) {
-
                 withContext(Dispatchers.Main) {
-
                     Toast.makeText(this@MainActivity, "Error: Model missing!", Toast.LENGTH_LONG).show()
-
                     hideProgress()
-
                     btnPredictAll.isEnabled = true
-
+                    if (::btnPredictTotal.isInitialized) btnPredictTotal.isEnabled = true
                 }
-
                 return@launch
-
             }
-
-
 
             val results = mutableListOf<PredictionResult>()
 
+            // 1. Initialize Accumulators
+            var totalPrecision = 0.0; var totalRecall = 0.0; var totalF1 = 0.0
+            var totalLatency = 0.0; var totalEmrCount = 0; var totalHamming = 0.0; var totalFnr = 0.0
+            var overPredictionCount = 0; var hallucinationCount = 0
+            var abstentionCorrectCount = 0; var abstentionTotalCount = 0
+            var totalTtft = 0.0; var totalOtps = 0.0; var totalItps = 0.0
+            var totalOet = 0.0; var totalJavaHeap = 0.0; var totalNativeHeap = 0.0; var totalPss = 0.0
+            var validSamples = 0; var successCount = 0; var failCount = 0
 
-
-// 1. Quality Accumulators
-
-            var totalPrecision = 0.0
-
-            var totalRecall = 0.0
-
-            var totalF1 = 0.0
-
-            var totalLatency = 0.0
-
-            var totalEmrCount = 0
-
-            var totalHamming = 0.0
-
-            var totalFnr = 0.0
-
-
-
-// 2. Safety Accumulators
-
-            var overPredictionCount = 0
-
-            var hallucinationCount = 0
-
-            var abstentionCorrectCount = 0
-
-            var abstentionTotalCount = 0
-
-
-
-// 3. Efficiency Accumulators
-
-            var totalTtft = 0.0
-
-            var totalOtps = 0.0
-
-            var totalItps = 0.0
-
-            var totalOet = 0.0
-
-            var totalJavaHeap = 0.0
-
-            var totalNativeHeap = 0.0
-
-            var totalPss = 0.0
-
-
-
-            var validSamples = 0
-
-            var successCount = 0
-
-            var failCount = 0
-
-
-
-            for ((index, item) in dataset.foodItems.withIndex()) {
-
+            // 2. Loop through the GENERIC list of items
+            for ((index, item) in items.withIndex()) {
                 withContext(Dispatchers.Main) {
-
-                    val percent = ((index.toFloat() / dataset.foodItems.size) * 100).toInt()
-
+                    val percent = ((index.toFloat() / items.size) * 100).toInt()
                     progressBar.progress = percent
-
-                    tvProgress.text = "Processing ${index + 1}/${dataset.foodItems.size}: ${item.name}"
-
+                    tvProgress.text = "Processing ${index + 1}/${items.size}: ${item.name}"
                 }
-
-
 
                 try {
-
                     val prompt = buildPrompt(item.ingredients)
 
-
-
-// Capture Memory BEFORE
-
+                    // Memory & Time Capture
                     val javaBefore = MemoryReader.javaHeapKb()
-
                     val nativeBefore = MemoryReader.nativeHeapKb()
-
                     val pssBefore = MemoryReader.totalPssKb()
-
                     val startNs = System.nanoTime()
 
-
-
-// Run Inference
-
+                    // Inference
                     val rawResult = inferAllergens(prompt, modelPath, false)
 
-
-
-// Capture Metrics AFTER
-
+                    // Metrics Calculation
                     val latencyMs = (System.nanoTime() - startNs) / 1_000_000
-
                     val javaDiff = MemoryReader.javaHeapKb() - javaBefore
-
                     val nativeDiff = MemoryReader.nativeHeapKb() - nativeBefore
-
                     val pssDiff = MemoryReader.totalPssKb() - pssBefore
 
-
-
                     val (predictedStr, cppMetrics) = parseRawResult(rawResult)
-
                     val metrics = MetricsCalculator.calculate(item.allergensMapped, predictedStr)
 
-
-
-// --- Aggregate Quality ---
-
+                    // Accumulate Data
                     totalPrecision += metrics.precision
-
                     totalRecall += metrics.recall
-
                     totalF1 += metrics.f1Score
-
                     totalLatency += latencyMs
-
                     if (metrics.exactMatch) totalEmrCount++
-
                     totalHamming += metrics.hammingLoss
-
                     totalFnr += metrics.falseNegativeRate
 
-
-
-// --- Aggregate Safety ---
-
                     if (metrics.isOverPrediction) overPredictionCount++
-
                     if (metrics.isHallucination) hallucinationCount++
-
                     if (metrics.isAbstentionCase) {
-
                         abstentionTotalCount++
-
                         if (metrics.isAbstentionSuccess) abstentionCorrectCount++
-
                     }
 
-
-
-// --- Aggregate Efficiency ---
-
                     totalTtft += cppMetrics.ttft
-
                     totalOtps += cppMetrics.otps
-
                     totalItps += cppMetrics.itps
-
                     totalOet += cppMetrics.oet
-
                     totalJavaHeap += javaDiff
-
                     totalNativeHeap += nativeDiff
-
                     totalPss += pssDiff
-
-
-
                     validSamples++
 
-
-
                     val finalMetrics = InferenceMetrics(
-
-                        latencyMs = latencyMs,
-
-                        javaHeapKb = javaDiff,
-
-                        nativeHeapKb = nativeDiff,
-
-                        totalPssKb = pssDiff,
-
-                        ttft = cppMetrics.ttft,
-
-                        itps = cppMetrics.itps,
-
-                        otps = cppMetrics.otps,
-
-                        oet = cppMetrics.oet
-
+                        latencyMs, javaDiff, nativeDiff, pssDiff,
+                        cppMetrics.ttft, cppMetrics.itps, cppMetrics.otps, cppMetrics.oet
                     )
-
-
 
                     val result = PredictionResult(
-
                         foodItem = item,
-
                         predictedAllergens = predictedStr,
-
-                        modelName = selectedModelFilename, // <--- ADD THIS LINE
-
+                        modelName = selectedModelFilename,
                         metrics = finalMetrics
-
                     )
-
                     results.add(result)
-
                     successCount++
 
-
-
-                    notificationManager.showProgressNotification(index + 1, dataset.foodItems.size, item.name)
-
-
+                    notificationManager.showProgressNotification(index + 1, items.size, item.name)
 
                 } catch (e: Exception) {
-
                     failCount++
-
                     Log.e("BATCH", "Failed on item ${item.name}", e)
-
                 }
-
             }
 
-
-
-// Save individual results
-
+            // 3. Save Results
             val (fbSuccess, fbFail) = firebaseService.saveBatchResults(results)
-
             predictionResults.clear()
-
             predictionResults.addAll(results)
 
-
-
-// --- Calculate Final Averages ---
-
+            // 4. Calculate Averages
             val avgPrecision = if (validSamples > 0) totalPrecision / validSamples else 0.0
-
             val avgRecall = if (validSamples > 0) totalRecall / validSamples else 0.0
-
             val avgF1 = if (validSamples > 0) totalF1 / validSamples else 0.0
-
             val avgLatency = if (validSamples > 0) totalLatency / validSamples else 0.0
-
             val avgEmr = if (validSamples > 0) (totalEmrCount.toDouble() / validSamples) * 100 else 0.0
-
             val avgHamming = if (validSamples > 0) totalHamming / validSamples else 0.0
-
             val avgFnr = if (validSamples > 0) (totalFnr / validSamples) * 100 else 0.0
-
-
-
             val hallucinationRate = if (validSamples > 0) (hallucinationCount.toDouble() / validSamples) * 100 else 0.0
-
             val overPredictionRate = if (validSamples > 0) (overPredictionCount.toDouble() / validSamples) * 100 else 0.0
-
             val abstentionAccuracy = if (abstentionTotalCount > 0) (abstentionCorrectCount.toDouble() / abstentionTotalCount) * 100 else 0.0
 
-
-
-// Log Debug Info for TNR
-
-            Log.d("BATCH", "TNR Calc: Correct=$abstentionCorrectCount / Total=$abstentionTotalCount = $abstentionAccuracy")
-
-
-
             val avgTtft = if (validSamples > 0) totalTtft / validSamples else 0.0
-
             val avgOtps = if (validSamples > 0) totalOtps / validSamples else 0.0
-
             val avgItps = if (validSamples > 0) totalItps / validSamples else 0.0
-
             val avgOet = if (validSamples > 0) totalOet / validSamples else 0.0
-
             val avgJavaHeap = if (validSamples > 0) totalJavaHeap / validSamples else 0.0
-
             val avgNativeHeap = if (validSamples > 0) totalNativeHeap / validSamples else 0.0
-
             val avgPss = if (validSamples > 0) totalPss / validSamples else 0.0
 
-
-
-// --- Save Benchmark Summary ---
-
+            // 5. Save Benchmark
             try {
-
-// This saves the calculated averages directly to Dashboard collections
-
                 firebaseService.saveBenchmark(
                     modelName = selectedModelFilename,
-
-                    // Quality
-                    avgPrecision = avgPrecision,
-                    avgRecall = avgRecall,
-                    avgF1 = avgF1,
-                    avgEmr = avgEmr,
-                    avgHamming = avgHamming,
-                    avgFnr = avgFnr,
-
-                    // Safety
-                    abstentionAccuracy = abstentionAccuracy,
-                    hallucinationRate = hallucinationRate,
-                    overPredictionRate = overPredictionRate,
-
-                    // Efficiency
-                    avgLatency = avgLatency,
-                    avgTotalTime = avgLatency,   // ⭐ 补这一行
-                    avgTtft = avgTtft,
-                    avgItps = avgItps,
-                    avgOtps = avgOtps,
-                    avgOet = avgOet,
-                    avgJavaHeap = avgJavaHeap / 1024.0,
-                    avgNativeHeap = avgNativeHeap / 1024.0,
-                    avgPss = avgPss / 1024.0
+                    avgPrecision = avgPrecision, avgRecall = avgRecall, avgF1 = avgF1,
+                    avgEmr = avgEmr, avgHamming = avgHamming, avgFnr = avgFnr,
+                    abstentionAccuracy = abstentionAccuracy, hallucinationRate = hallucinationRate, overPredictionRate = overPredictionRate,
+                    avgLatency = avgLatency, avgTotalTime = avgLatency,
+                    avgTtft = avgTtft, avgItps = avgItps, avgOtps = avgOtps, avgOet = avgOet,
+                    avgJavaHeap = avgJavaHeap / 1024.0, avgNativeHeap = avgNativeHeap / 1024.0, avgPss = avgPss / 1024.0
                 )
-
-
-                Log.d("BATCH", "Benchmark saved for $selectedModelFilename")
-
             } catch (e: Exception) {
-
                 Log.e("BATCH", "Failed to save benchmark summary", e)
-
             }
-
-
 
             withContext(Dispatchers.Main) {
-
                 progressBar.progress = 100
-
-                tvProgress.text = "Batch Complete!\nF1: %.2f | TNR: %.0f%%".format(avgF1, abstentionAccuracy)
-
+                tvProgress.text = "Completed: $batchName\nF1: %.2f".format(avgF1)
                 btnPredictAll.isEnabled = true
+                btnPredictItem.isEnabled = true
+                if (::btnPredictTotal.isInitialized) btnPredictTotal.isEnabled = true
 
                 btnViewResults.visibility = View.VISIBLE
-
-                notificationManager.showCompletionNotification(successCount, dataset.foodItems.size, dataset.name, fbSuccess, fbFail)
-
-                Toast.makeText(this@MainActivity, "Batch Complete. Saved to Dashboard.", Toast.LENGTH_LONG).show()
-
+                notificationManager.showCompletionNotification(successCount, items.size, batchName, fbSuccess, fbFail)
+                Toast.makeText(this@MainActivity, "Prediction Complete. Saved to Dashboard.", Toast.LENGTH_LONG).show()
             }
-
         }
-
     }
-
 
 
     private fun parseRawResult(rawResult: String): Pair<String, InferenceMetrics> {
@@ -923,145 +702,106 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initializeUI() {
-
         spinnerDataset = findViewById(R.id.spinnerDataset)
-
         spinnerFoodItem = findViewById(R.id.spinnerFoodItem)
-
         tvDatasetInfo = findViewById(R.id.tvDatasetInfo)
-
         btnLoadDataset = findViewById(R.id.btnLoadDataset)
-
         btnPredictItem = findViewById(R.id.btnPredictItem)
-
         btnPredictAll = findViewById(R.id.btnPredictAll)
-
         btnViewResults = findViewById(R.id.btnViewResults)
-
         progressBar = findViewById(R.id.progressBar)
-
         tvProgress = findViewById(R.id.tvProgress)
-
-
-
+        btnViewHistory = findViewById(R.id.btnViewHistory)
         spinnerModel = findViewById(R.id.spinnerModel)
-
         btnViewDashboard = findViewById(R.id.btnViewDashboard)
 
+        // --- NEW: Initialize the Total Button ---
+        btnPredictTotal = findViewById(R.id.btnPredictTotal)
 
+        btnViewHistory.setOnClickListener {
+            val intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
+        }
 
         val modelAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, modelsList)
-
         modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
         spinnerModel.adapter = modelAdapter
-
         spinnerModel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-
                 selectedModelFilename = modelsList[pos]
-
             }
-
             override fun onNothingSelected(p0: AdapterView<*>?) {}
-
         }
-
-
 
         btnLoadDataset.setOnClickListener {
-
             val pos = spinnerDataset.selectedItemPosition
-
             if (pos >= 0 && pos < datasets.size) {
-
                 selectedDataset = datasets[pos]
-
                 updateDatasetInfo()
-
                 btnPredictAll.isEnabled = true
-
                 setupFoodItemSpinner(selectedDataset!!)
-
                 btnPredictItem.isEnabled = true
-
                 Toast.makeText(this, "Loaded: ${selectedDataset?.name}", Toast.LENGTH_SHORT).show()
-
             }
-
         }
-
-
 
         btnPredictItem.setOnClickListener {
-
             selectedDataset?.let { ds ->
-
                 val pos = spinnerFoodItem.selectedItemPosition
-
                 if (pos >= 0 && pos < ds.foodItems.size) {
-
                     predictAndShowSingleItem(ds.foodItems[pos])
-
                 }
-
             }
-
         }
 
-
-
+        // --- MODIFIED: Predict Batch (Dataset only) ---
         btnPredictAll.setOnClickListener {
-
-            selectedDataset?.let { startBatchPrediction(it) }
-
+            selectedDataset?.let {
+                // Call the unified function with the dataset list
+                performBatchPrediction(it.foodItems, it.name)
+            }
         }
 
-
+        // --- NEW: Predict Total (All Items) ---
+        btnPredictTotal.setOnClickListener {
+            if (allFoodItems.isNotEmpty()) {
+                // Call the unified function with the FULL list
+                performBatchPrediction(allFoodItems, "Full Dataset (${allFoodItems.size} items)")
+            } else {
+                Toast.makeText(this, "Data not loaded yet", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         btnViewResults.setOnClickListener {
-
             val intent = Intent(this, ResultsActivity::class.java).apply {
-
                 putParcelableArrayListExtra("results", ArrayList(predictionResults))
-
             }
-
             startActivity(intent)
-
         }
-
-
 
         btnViewDashboard.setOnClickListener {
-
             val intent = Intent(this, DashboardActivity::class.java)
-
             startActivity(intent)
-
         }
-
     }
 
 
 
     private fun loadDataAsync() {
-
         lifecycleScope.launch(Dispatchers.IO) {
-
             allFoodItems = csvReader.readFoodItemsFromAssets()
-
             datasets = datasetManager.createDatasets(allFoodItems)
 
             withContext(Dispatchers.Main) {
-
                 setupDatasetSpinner()
-
+                // --- NEW: Enable the total button if data exists ---
+                if (allFoodItems.isNotEmpty()) {
+                    if (::btnPredictTotal.isInitialized) {
+                        btnPredictTotal.isEnabled = true
+                    }
+                }
             }
-
         }
-
     }
 
 

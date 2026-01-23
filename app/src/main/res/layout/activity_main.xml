@@ -97,8 +97,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:enabled="false"
-                    android:text="Predict All (Batch)"
+                    android:text="Predict Batch (Selected Set)"
                     android:backgroundTint="#FF5722" />
+
+            <Button
+                    android:id="@+id/btnPredictTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:enabled="false"
+                    android:text="Predict Entire Dataset (200 Items)"
+                    android:backgroundTint="#673AB7" />
 
             <Button
                     android:id="@+id/btnViewResults"
@@ -113,6 +122,14 @@
                     android:layout_height="wrap_content"
                     android:text="View Performance Dashboard"
                     android:backgroundTint="#4CAF50"
+                    android:layout_marginTop="8dp"/>
+
+            <Button
+                    android:id="@+id/btnViewHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="View Prediction History"
+                    android:backgroundTint="#607D8B"
                     android:layout_marginTop="8dp"/>
 
             <ProgressBar

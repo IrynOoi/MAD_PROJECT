@@ -1,6 +1,7 @@
-// FoodDetailActivity.kt
+//History Detail Activity.kt
 package edu.utem.ftmk.slm02
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.TextView
@@ -8,24 +9,27 @@ import androidx.appcompat.app.AppCompatActivity
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import android.graphics.Color
 
-class FoodDetailActivity : AppCompatActivity() {
+class HistoryDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.food_detail)
+        // Keep using your history layout, as the IDs match
+        setContentView(R.layout.activity_history_detail)
 
         val btnBack = findViewById<ImageButton>(R.id.btnBackDetail)
         btnBack.setOnClickListener { finish() }
 
-        val result = intent.getParcelableExtra<PredictionResult>("prediction_result")
+        // IMPORTANT: HistoryActivity sends data using "EXTRA_RESULT", not "prediction_result"
+        val result = intent.getParcelableExtra<PredictionResult>("EXTRA_RESULT")
 
         if (result != null) {
             populateOriginalFields(result)
-            populateTable2Quality(result) // <--- Modified Function
+            populateTable2Quality(result)
             populateTable3Safety(result)
             populateTable4Efficiency(result)
+        } else {
+            finish()
         }
     }
 
@@ -44,11 +48,11 @@ class FoodDetailActivity : AppCompatActivity() {
             "EMPTY" else food.allergens
         findViewById<TextView>(R.id.tvDetailRawAllergens).text = rawAllergens
 
-        // Changed "None" to "EMPTY" for Mapped Allergens
         val mappedAllergens = if (food.allergensMapped.isNullOrEmpty() || food.allergensMapped.equals("empty", ignoreCase = true))
             "EMPTY" else food.allergensMapped
 
-        // 3. Predicted (Updated with Model Name)
+        // 3. Predicted
+        // Clean up the model name if needed, or just use result.modelName like FoodDetailActivity
         findViewById<TextView>(R.id.tvDetailModelName).text = result.modelName
         findViewById<TextView>(R.id.tvDetailMappedAllergens).text = mappedAllergens
         findViewById<TextView>(R.id.tvDetailPredicted).text = result.predictedAllergens ?: "No Prediction"
@@ -58,19 +62,17 @@ class FoodDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvDetailTimestamp).text = sdf.format(Date(result.timestamp))
     }
 
-    // --- MODIFIED FUNCTION BELOW ---
     private fun populateTable2Quality(result: PredictionResult) {
         val metrics = MetricsCalculator.calculate(
             result.foodItem.allergensMapped,
             result.predictedAllergens ?: ""
         )
 
-        // Precision, Recall, F1 remain as Decimals (as per PDF standard for these specific metrics)
         findViewById<TextView>(R.id.tvValPrecision).text = "%.2f".format(metrics.precision)
         findViewById<TextView>(R.id.tvValRecall).text = "%.2f".format(metrics.recall)
         findViewById<TextView>(R.id.tvValF1).text = "%.2f".format(metrics.f1Score)
 
-        // 1. Exact Match: Display as Percentage equivalent for single item
+        // 1. Exact Match: Display as Percentage with Color
         val tvExact = findViewById<TextView>(R.id.tvValExactMatch)
         if (metrics.exactMatch) {
             tvExact.text = "YES (100%)"
@@ -80,14 +82,12 @@ class FoodDetailActivity : AppCompatActivity() {
             tvExact.setTextColor(Color.parseColor("#C62828")) // Red
         }
 
-        // Hamming Loss remains Decimal
         findViewById<TextView>(R.id.tvValHamming).text = "%.3f".format(metrics.hammingLoss)
 
-        // 2. FNR: Convert Ratio (0.0 - 1.0) to Percentage (0.0% - 100.0%)
+        // 2. FNR: Convert Ratio to Percentage
         val fnrPercentage = metrics.falseNegativeRate * 100
         findViewById<TextView>(R.id.tvValFNR).text = "%.1f%%".format(fnrPercentage)
     }
-    // -------------------------------
 
     private fun populateTable3Safety(result: PredictionResult) {
         val metrics = MetricsCalculator.calculate(
