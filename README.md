@@ -20,7 +20,7 @@
 
 
 
-## Summary of food product (predict all OR  predict 200 items)
+## Summary of food product (predict all OR  predict 200 items)-  they have same interface
 
 PART 1:
 
