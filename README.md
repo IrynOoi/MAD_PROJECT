@@ -150,10 +150,6 @@ PART 3:
 
 
 ## AFTER CLICK THE TOP RIGHT BUTTON AT PERFORMANCE PAGE 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/6f296592-5605-47e3-954e-3c74d3873ef5" />
-
-
-
 
 ## EXPORT IN CSV
 
