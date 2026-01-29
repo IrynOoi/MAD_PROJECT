@@ -156,6 +156,12 @@ PART 3:
 <img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/faafa166-2ea3-43f4-a957-f774ba45b55f" />
 
 
+## THE CONTENT INSIDE CSV
+
+<img width="775" height="683" alt="image" src="https://github.com/user-attachments/assets/9011cb70-6fd2-487a-add9-9ce91277084b" />
+
+
+
 ## PREDICT HISTORY INTERFACE
 
 # ALL MODELS
