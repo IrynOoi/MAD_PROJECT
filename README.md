@@ -160,12 +160,14 @@ PART 3:
 
 ## EXPORT IN CSV
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/faafa166-2ea3-43f4-a957-f774ba45b55f" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/01bb7a1a-6f35-4270-b79f-8b18fc6ae57c" />
+
 
 
 ## THE CONTENT INSIDE CSV
 
-<img width="878" height="687" alt="image" src="https://github.com/user-attachments/assets/346183e7-a6c6-4366-8597-18210053ec69" />
+<img width="1089" height="684" alt="image" src="https://github.com/user-attachments/assets/5e00b98e-1417-40c9-9924-28be86639d76" />
+
 
 
 
