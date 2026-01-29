@@ -165,7 +165,8 @@ PART 3:
 
 ## THE CONTENT INSIDE CSV
 
-<img width="775" height="683" alt="image" src="https://github.com/user-attachments/assets/9011cb70-6fd2-487a-add9-9ce91277084b" />
+<img width="878" height="687" alt="image" src="https://github.com/user-attachments/assets/346183e7-a6c6-4366-8597-18210053ec69" />
+
 
 
 
