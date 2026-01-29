@@ -83,7 +83,8 @@ PART 2:
 
 
 
-<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/df700e64-c54f-47fa-b7c8-e3b320c025f2" />
+<img width="572" height="1280" alt="image" src="https://github.com/user-attachments/assets/32372ecb-3223-456f-b5f0-03c0a175b606" />
+
 
 
 
